@@ -6,7 +6,7 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/Scenes/Game.unity
+    path: Assets/Scenes/Avocado.unity
     guid: e77ab5bcf99eedd4288576ef7cc0adf7
   m_configObjects:
     com.unity.xr.management.loader_settings: {fileID: 11400000, guid: eef219bc008ac894ca11b3f613ec375c, type: 2}
