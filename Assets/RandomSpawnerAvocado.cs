@@ -21,7 +21,7 @@ public class RandomSpawnerAvocado : MonoBehaviour
     
         update += Time.deltaTime;
         if (update > 0.01f){
-            if (cube_counter < 500) {  
+            if (cube_counter < 50) {  
             Vector3 randomSpanPosition=new Vector3(Random.Range(-1,1),Random.Range(3,5), Random.Range(2,3));
             //Vector3 randomSpanPosition=new Vector3(0, 8, 2);
             Instantiate(cubePrefab,randomSpanPosition, Quaternion.identity);
