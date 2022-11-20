@@ -13,16 +13,16 @@ public class RandomSpawnerChocolate : MonoBehaviour
     }
 
     IEnumerator Start() {
-    yield return new WaitForSeconds(0.2f);
+    yield return new WaitForSeconds(0.8f);
     }
 
     // Update is called once per frame
     void Update() {
     
         update += Time.deltaTime;
-        if (update > 0.01f){
+        if (update > 0.1f){
             if (cube_counter < 170) {  
-            Vector3 randomSpanPosition=new Vector3(Random.Range(-1,1),Random.Range(3,5), Random.Range(2,3));
+            Vector3 randomSpanPosition=new Vector3(Random.Range(-2,2),Random.Range(5,8), Random.Range(5,6));
             //Vector3 randomSpanPosition=new Vector3(0, 8, 2);
             Instantiate(cubePrefab,randomSpanPosition, Quaternion.identity);
             }
