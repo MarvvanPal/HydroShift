@@ -22,7 +22,7 @@ public class RandomSpawnerChocolate : MonoBehaviour
         update += Time.deltaTime;
         if (update > 0.1f){
             if (cube_counter < 170) {  
-            Vector3 randomSpanPosition=new Vector3(Random.Range(-2,2),Random.Range(5,8), Random.Range(5,6));
+            Vector3 randomSpanPosition=new Vector3(Random.Range(-2,2),Random.Range(5,8), Random.Range(2,3));
             //Vector3 randomSpanPosition=new Vector3(0, 8, 2);
             Instantiate(cubePrefab,randomSpanPosition, Quaternion.identity);
             }
