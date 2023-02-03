@@ -20,7 +20,7 @@ In this mixed reality (MR) prototype project, we try to convert abstract data in
 ### Usecase
 In this future related approach a customer is entering a grocery and stats shopping. While the customer is wearing  mixed reality glasses they can scan and select a product. The glasses are showing the hidden water consumption in a concrete manner. For example, the amount of needed water to produce one kilogram of cocoa can displayed right next to it. Through this they could get more affected. Based on this, they can overthink about their consumption decision. The solution can build a bridge between abstract data and influencing information. 
 
-[See the prototype of the future-oriented project in action in this video.](https://www.linkedin.com/posts/marvin-von-papen_future-university-augmentedreality-activity-7026791317019983872-EEIz?utm_source=share&utm_medium=member_desktop)
+[See the prototype of the future-oriented project in action in this video.](https://raw.githubusercontent.com/MarvvanPal/HydroShift/main/doc/HydroShift_v1-5_shrinked_LinkedIn.mp4)
 
 ## Project Phase and Focus
 
