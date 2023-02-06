@@ -34,8 +34,7 @@ Next main steps will be:
 - Improving visual effects
 - Improving technology like using the ability of spacial awareness from Hololens 2
 - Implementing Product selection via image recognition
-- Deploying on Hololens 2 and on Meta Quest 2 and maybe Meta Quest Pro (Devices are available through this project)
-
+- Deploying on Hololens 2 and maybe on Meta Quest 2
 
 ## Tech-Stack
 
@@ -43,4 +42,4 @@ Next main steps will be:
 
 We are using Microsoft Visual Studio 2019, [Unity](https://unity.com/) and [MRTK3](https://docs.microsoft.com/en-us/windows/mixed-reality/mrtk-unity/mrtk3-overview/).
 The MRTK3-approach keeps the door open to work crossplatform. With this, we can maybe avoid environmental changes. The downside of this is that we are more or less forced to use **Microsoft Windows**, but maybe we are able to enable our MacOS and Linux-Users through cloud-solutions like [shadow.tech](shadow.tech).
-Hardwarewise we are focusing on Microsoft Hololens 2 primarly. Additionally we can expand it to Meta Quest 2 and maybe Meta Quest Pro.
+Hardwarewise we are focusing on Microsoft Hololens 2 primarly. Additionally we maybe expand it to Meta Quest 2.
