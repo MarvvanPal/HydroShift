@@ -20,7 +20,8 @@ In this mixed reality (MR) prototype project, we try to convert abstract data in
 ### Usecase
 In this future related approach a customer is entering a grocery and stats shopping. While the customer is wearing  mixed reality glasses they can scan and select a product. The glasses are showing the hidden water consumption in a concrete manner. For example, the amount of needed water to produce one kilogram of cocoa can displayed right next to it. Through this they could get more affected. Based on this, they can overthink about their consumption decision. The solution can build a bridge between abstract data and influencing information. 
 
-[See the prototype of the future-oriented project in action in this video.](https://www.linkedin.com/posts/marvin-von-papen_future-university-augmentedreality-activity-7026791317019983872-EEIz?utm_source=share&utm_medium=member_desktop)
+https://user-images.githubusercontent.com/79196690/216679214-5f8c41a8-c93f-432a-8f4c-0e98a37dfe45.mp4
+
 
 ## Project Phase and Focus
 
@@ -33,8 +34,7 @@ Next main steps will be:
 - Improving visual effects
 - Improving technology like using the ability of spacial awareness from Hololens 2
 - Implementing Product selection via image recognition
-- Deploying on Hololens 2 and on Meta Quest 2 and maybe Meta Quest Pro (Devices are available through this project)
-
+- Deploying on Hololens 2 and maybe on Meta Quest 2
 
 ## Tech-Stack
 
@@ -42,4 +42,4 @@ Next main steps will be:
 
 We are using Microsoft Visual Studio 2019, [Unity](https://unity.com/) and [MRTK3](https://docs.microsoft.com/en-us/windows/mixed-reality/mrtk-unity/mrtk3-overview/).
 The MRTK3-approach keeps the door open to work crossplatform. With this, we can maybe avoid environmental changes. The downside of this is that we are more or less forced to use **Microsoft Windows**, but maybe we are able to enable our MacOS and Linux-Users through cloud-solutions like [shadow.tech](shadow.tech).
-Hardwarewise we are focusing on Microsoft Hololens 2 primarly. Additionally we can expand it to Meta Quest 2 and maybe Meta Quest Pro.
+Hardwarewise we are focusing on Microsoft Hololens 2 primarly. Additionally we maybe expand it to Meta Quest 2.
