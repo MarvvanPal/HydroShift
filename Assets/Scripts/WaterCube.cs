@@ -5,8 +5,8 @@ using System;
 
 public class WaterCube : MonoBehaviour
 {
-    public GameObject Cube;
-
+    //public GameObject Cube;
+    /*
     public void SpawnCube(float width, float height, float length)
     {
         Vector3 spawnposition = new Vector3(1, 1, 1);
@@ -16,14 +16,14 @@ public class WaterCube : MonoBehaviour
         GameObject newObject = Instantiate(Cube, spawnposition, spawnRotation);
         newObject.transform.localScale = spawnScale;
     }
-
+    */
     public float volInM3(float volume)
     {
         float volInM3 = volume / 1000;
         return volInM3;
     }
 
-    public Tuple<float, float, float> GetCubeDimensions(float m3)
+    public Tuple<float, float, float> GetCubeDimensions(float m3 = 0.7f)
     {
         float width, height, length;
 

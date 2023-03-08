@@ -9,7 +9,7 @@ public class Player : MonoBehaviour
     float volume = 7000f;
     Tuple<float, float, float> dimensionsOfCube;
     float volInM3;
-    public Animator animController;
+    public Animator animator;
 
     // Start is called before the first frame update
     void Start()
@@ -28,9 +28,9 @@ public class Player : MonoBehaviour
 
     void Main()
     {
-        Cube.SpawnCube(dimensionsOfCube.Item1, dimensionsOfCube.Item2, dimensionsOfCube.Item3);
-        Animator cubeAnim = Cube.GetComponent<Animator>();
-        cubeAnim.runtimeAnimatorController = animController.runtimeAnimatorController;
+        //Cube.SpawnCube(dimensionsOfCube.Item1, dimensionsOfCube.Item2, dimensionsOfCube.Item3);
+        Animator animator = Cube.GetComponent<Animator>();
+        animator.runtimeAnimatorController = Resources.Load("Assets/Animations/LetCubeFlyIn.controller") as RuntimeAnimatorController;
 
     }
 }
