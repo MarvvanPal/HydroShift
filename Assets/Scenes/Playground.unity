@@ -786,7 +786,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7176496711088362013, guid: 4039c88468d344a2191047fd233bbb6f, type: 3}
       propertyPath: onClicked.m_PersistentCalls.m_Calls.Array.data[1].m_Arguments.m_StringArgument
-      value: animate
+      value: BigWaterCubeAnimation
       objectReference: {fileID: 0}
     - target: {fileID: 7176496711088362013, guid: 4039c88468d344a2191047fd233bbb6f, type: 3}
       propertyPath: onClicked.m_PersistentCalls.m_Calls.Array.data[2].m_Arguments.m_StringArgument
