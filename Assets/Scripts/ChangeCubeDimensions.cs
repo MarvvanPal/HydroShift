@@ -2,20 +2,59 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System.Data.SQLite;
+
 
 public class ChangeCubeDimensions : MonoBehaviour
 {
     Tuple<float, float, float> dimensionsOfCube;
-    // TODO: add the watercube class and set in the values from the GetCubeDimensions Method into the scale vector3
+    float volumeInCubicMeters;
+
+    // Database lookup is here:
+    string itemName = "Avocado";
+    float volume;
+
+
     // Start is called before the first frame update
     void Start()
     {
-        dimensionsOfCube = GetCubeDimensions();
+        string connectionString = "Data Source=Groceries.db;Version=3;";
+        using (SQLiteConnection connection = new SQLiteConnection(connectionString))
+        {
+            connection.Open();
+
+            // Create a SQL command to select the "WaterConsumedPerPiece" value for the given item name
+            string sql = "SELECT WaterConsumedPerPiece FROM Items WHERE Name = @itemName";
+            using (SQLiteCommand command = new SQLiteCommand(sql, connection))
+            {
+                command.Parameters.AddWithValue("@itemName", itemName);
+
+                // Execute the command and retrieve the value
+                object result = command.ExecuteScalar();
+                if (result != null && result != DBNull.Value)
+                {
+                    volume = Convert.ToSingle(result);
+                }
+                else
+                {
+                    // Handle the case where the item name was not found in the database
+                    Debug.LogError("Item not found in the database.");
+                }
+            }
+        }
+        volumeInCubicMeters = volInM3(volume);
+        dimensionsOfCube = GetCubeDimensions(volumeInCubicMeters);
         Transform cubeTransform = GetComponent<Transform>();
         cubeTransform.localScale = new Vector3(dimensionsOfCube.Item1, dimensionsOfCube.Item2, dimensionsOfCube.Item3);
     }
 
-    public Tuple<float, float, float> GetCubeDimensions(float m3 = 0.7f)
+    public float volInM3(float volume)
+    {
+        float volInM3 = volume / 1000;
+        return volInM3;
+    }
+
+    public Tuple<float, float, float> GetCubeDimensions(float m3)
     {
         float width, height, length;
 
@@ -42,3 +81,4 @@ public class ChangeCubeDimensions : MonoBehaviour
         return Tuple.Create(width, height, length);
     }
 }
+

@@ -49,6 +49,5 @@ public class WaterCube : MonoBehaviour
         }
         return Tuple.Create(width, height, length);
     } 
-   
 
 }
