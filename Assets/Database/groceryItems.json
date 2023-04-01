@@ -1,0 +1,24 @@
+{
+    "keys": [
+        "Avocado",
+        "Chocolate",
+        "Beef"
+    ],
+    "values": [
+        {
+            "EAN": 1234567890,
+            "Category": "Vegetables",
+            "WaterConsumedPerPiece": 800.0
+        },
+        {
+            "EAN": 9876543210,
+            "Category": "Sweets",
+            "WaterConsumedPerPiece": 1700.0
+        },
+        {
+            "EAN": 1234098765,
+            "Category": "Meat",
+            "WaterConsumedPerPiece": 15000.0
+        }
+    ]
+}
