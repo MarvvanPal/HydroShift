@@ -1554,7 +1554,7 @@ GameObject:
   - component: {fileID: 7442190784808872403}
   - component: {fileID: 3278413525856721977}
   m_Layer: 5
-  m_Name: Spawn_Cube
+  m_Name: SpawnSmallCubes
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3136,7 +3136,7 @@ GameObject:
   - component: {fileID: 4486806723984634070}
   - component: {fileID: 8393843687578223932}
   m_Layer: 5
-  m_Name: One_Cube
+  m_Name: SpawnBigCube
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
