@@ -8,9 +8,8 @@ public class SmallCubeSpawner : MonoBehaviour
     public JsonManager jsonManager;
     public GameObject cubePrefab;
          
-    private int cubesToBeSpawned = 0;
-    private float update;
-    private float volume = 0f;
+    private int cubesToBeSpawned;
+    private float volume;
 
     // How often do you want the cubes to be spawned?
     private float spawnRate = 0.7f;
@@ -22,48 +21,22 @@ public class SmallCubeSpawner : MonoBehaviour
     {
         volume = jsonManager.GetWaterConsumedPerPiece(itemName);
         cubesToBeSpawned = (int)Mathf.Round(volume) / 100;
-        //cubesToBeSpawned = 50;
-        InvokeRepeating("SpawnCubeWrapper", 0f, spawnRate);
-        //SpawnCubeWrapper();
+
+        //InvokeRepeating("SpawnCubeWrapper", 0f, spawnRate);
+
+        StartCoroutine(SpawnCube(cubesToBeSpawned, spawnRate));
     }
 
-    /*
-    void Awake()
-    {
-        update = 0.0f;
-    }
+
     
-    // Update is called once per frame
-    void Update()
-    {
-
-        update += Time.deltaTime;
-
-        if (update > 0.1f)
-        {
-            if (amountOfCubes <= cubesToBeSpawned)
-            {
-                Vector3 randomSpawnPosition = new Vector3(Random.Range(-2, 2), Random.Range(5, 8), Random.Range(2, 3));
-                Instantiate(cubePrefab, randomSpawnPosition, Quaternion.identity);
-            }
-
-            update = 0.0f;
-            amountOfCubes += 1;
-        }
-    }
-    */
-    private void SpawnCube(int cubesToBeSpawned)
+    private IEnumerator SpawnCube(int cubesToBeSpawned, float delay)
     {
         for (int i = 0; i <= cubesToBeSpawned; i++)
         {
             Vector3 randomSpawnPosition = new Vector3(Random.Range(-2, 2), Random.Range(5, 8), Random.Range(2, 3));
             Instantiate(cubePrefab, randomSpawnPosition, Quaternion.identity);
+            yield return new WaitForSeconds(delay);
         }
-    }
-
-    private void SpawnCubeWrapper()
-    {
-        SpawnCube(cubesToBeSpawned);
-    }
+    }   
 
 }
