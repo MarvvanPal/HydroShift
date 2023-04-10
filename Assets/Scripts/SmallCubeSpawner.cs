@@ -13,7 +13,7 @@ public class SmallCubeSpawner : MonoBehaviour
     private float volume = 0f;
 
     // How often do you want the cubes to be spawned?
-    private float spawnRate = 0.1f;
+    private float spawnRate = 0.7f;
 
     // Which item do you want the cubes to represent? 
     private string itemName = "Milk";
@@ -23,8 +23,8 @@ public class SmallCubeSpawner : MonoBehaviour
         volume = jsonManager.GetWaterConsumedPerPiece(itemName);
         cubesToBeSpawned = (int)Mathf.Round(volume) / 100;
         //cubesToBeSpawned = 50;
-        //InvokeRepeating("SpawnCubeWrapper", 0f, spawnRate);
-        SpawnCubeWrapper();
+        InvokeRepeating("SpawnCubeWrapper", 0f, spawnRate);
+        //SpawnCubeWrapper();
     }
 
     /*
