@@ -22,9 +22,10 @@ public class SmallCubeSpawner : MonoBehaviour
     private void Start()
     {
         volume = jsonManager.GetWaterConsumedPerPiece(itemName);
-        int cubesToBeSpawned = (int)Mathf.Round(volume) / 10;
+        cubesToBeSpawned = (int)Mathf.Round(volume) / 100;
         //cubesToBeSpawned = 50;
-        InvokeRepeating("SpawnCubeWrapper", 0f, spawnRate);
+        //InvokeRepeating("SpawnCubeWrapper", 0f, spawnRate);
+        SpawnCubeWrapper();
     }
 
     /*
