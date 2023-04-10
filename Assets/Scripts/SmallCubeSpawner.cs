@@ -14,14 +14,16 @@ public class SmallCubeSpawner : MonoBehaviour
     // Varibale to determine the amount of cubes to be spawned, will be calculated
     private int cubesToBeSpawned;
 
+    // Set a maximum amount of cubes to be spawned
+
     // Volume variable to be filled by a request to the json file
     private float volume;
 
     // How often do you want the cubes to be spawned?
-    private float spawnRate = 0.5f;
+    private float spawnRate = 0.3f;
 
     // The water consumption of which item do you want the cubes to represent? 
-    private string itemName = "Beef";
+    private string itemName = "Burger";
 
     private void Start()
     {
@@ -42,6 +44,7 @@ public class SmallCubeSpawner : MonoBehaviour
 
             GameObject spawnedCube = Instantiate(cubePrefab, randomSpawnPosition, Quaternion.identity);
             spawnedCube.transform.localScale = smallCubeSize;
+            Debug.Log("Cube Spawned!");
 
             yield return new WaitForSeconds(delay);
         }
@@ -50,24 +53,32 @@ public class SmallCubeSpawner : MonoBehaviour
 
     private int calculateCubesToBeSpawned(float volume)
     {
-        cubesToBeSpawned = ((int)Mathf.Round(volume) / 10) - 1; 
+        if ((((int)Mathf.Round(volume) / 10) - 1) > 100)
+        {
+            cubesToBeSpawned = 100;
+        }
+
+        else
+        {
+            cubesToBeSpawned = ((int)Mathf.Round(volume) / 10) - 1;
+        }
         return cubesToBeSpawned;
     }
 
 
     private Vector3 GetSmallCubeDimensions(int cubesToBeSpawned, float volume)
     {
-        if (cubesToBeSpawned <= 100)
+        if (cubesToBeSpawned < 100)
         {
             smallCubeSize = new Vector3(0.22f, 0.22f, 0.22f);
             
         }
 
-        else
+        else if (cubesToBeSpawned == 100)
         {
             float cubeVolumeInM3 = (volume / cubesToBeSpawned) / 1000;
             float dimensions = Mathf.Pow(((float)Mathf.Round(cubeVolumeInM3 * 100) / 100), (1/3));
-            smallCubeSize = new Vector3(dimensions, dimensions, dimensions);
+            smallCubeSize = new Vector3(x : dimensions, y : dimensions, z : dimensions);
         }
 
         return smallCubeSize;
