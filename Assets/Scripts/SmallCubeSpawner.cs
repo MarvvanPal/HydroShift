@@ -9,7 +9,6 @@ public class SmallCubeSpawner : MonoBehaviour
     public GameObject cubePrefab;
          
     private int cubesToBeSpawned = 0;
-    private int amountOfCubes;
     private float update;
     private float volume = 0f;
 
@@ -53,19 +52,18 @@ public class SmallCubeSpawner : MonoBehaviour
         }
     }
     */
-    private void SpawnCube(int amountOfCubes, int cubesToBeSpawned)
+    private void SpawnCube(int cubesToBeSpawned)
     {
-        while (amountOfCubes <= cubesToBeSpawned)
+        for (int i = 0; i <= cubesToBeSpawned; i++)
         {
             Vector3 randomSpawnPosition = new Vector3(Random.Range(-2, 2), Random.Range(5, 8), Random.Range(2, 3));
             Instantiate(cubePrefab, randomSpawnPosition, Quaternion.identity);
         }
-        amountOfCubes += 1;
     }
 
     private void SpawnCubeWrapper()
     {
-        SpawnCube(amountOfCubes, cubesToBeSpawned);
+        SpawnCube(cubesToBeSpawned);
     }
 
 }

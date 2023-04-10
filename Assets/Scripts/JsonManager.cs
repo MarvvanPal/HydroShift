@@ -4,6 +4,46 @@ using UnityEngine;
 using System.IO;
 using Microsoft.MixedReality.Toolkit;
 
+[System.Serializable]
+public class GroceryItem
+{
+    public long EAN;
+    public string Category;
+    public float WaterConsumedPerPiece;
+    public float MassPerPieceInGram;
+}
+
+[System.Serializable]
+public class SerializableDictionary : ISerializationCallbackReceiver
+{
+    public List<string> keys;
+    public List<GroceryItem> values;
+    private Dictionary<string, GroceryItem> target;
+
+    public SerializableDictionary(Dictionary<string, GroceryItem> target)
+    {
+        this.target = target;
+    }
+
+    public void OnBeforeSerialize()
+    {
+        keys = new List<string>(target.Keys);
+        values = new List<GroceryItem>(target.Values);
+    }
+
+    public void OnAfterDeserialize()
+    {
+        int count = Mathf.Min(keys.Count, values.Count);
+        target = new Dictionary<string, GroceryItem>(count);
+        for (int i = 0; 1 < count; ++i)
+        {
+            target[keys[i]] = values[i];
+        }
+    }
+
+}
+
+
 public class JsonManager : MonoBehaviour
 {
     //initialize the variables needed
@@ -191,41 +231,4 @@ public class JsonManager : MonoBehaviour
     }
 }
 
-[System.Serializable]
-public class GroceryItem
-{
-    public long EAN;
-    public string Category;
-    public float WaterConsumedPerPiece;
-    public float MassPerPieceInGram;
-}
 
-[System.Serializable]
-public class SerializableDictionary : ISerializationCallbackReceiver
-{
-    public List<string> keys;
-    public List<GroceryItem> values;
-    private Dictionary<string, GroceryItem> target;
-
-    public SerializableDictionary(Dictionary<string, GroceryItem> target)
-    {
-        this.target = target;
-    }
-
-    public void OnBeforeSerialize()
-    {
-        keys = new List<string>(target.Keys);
-        values = new List<GroceryItem>(target.Values);
-    }
-
-    public void OnAfterDeserialize()
-    {
-        int count = Mathf.Min(keys.Count, values.Count);
-        target = new Dictionary<string, GroceryItem>(count);
-        for (int i = 0; 1 < count; ++i)
-        {
-            target[keys[i]] = values[i];
-        }
-    }
-
-}
