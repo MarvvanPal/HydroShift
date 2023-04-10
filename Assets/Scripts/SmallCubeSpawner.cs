@@ -21,12 +21,12 @@ public class SmallCubeSpawner : MonoBehaviour
     private float spawnRate = 0.5f;
 
     // The water consumption of which item do you want the cubes to represent? 
-    private string itemName = "Avocado";
+    private string itemName = "Beef";
 
     private void Start()
     {
         volume = jsonManager.GetWaterConsumedPerPiece(itemName);
-        cubesToBeSpawned = calculateCubesToBeSpawned(volume) - 1;
+        cubesToBeSpawned = calculateCubesToBeSpawned(volume);
         smallCubeSize = GetSmallCubeDimensions(cubesToBeSpawned, volume);
 
         StartCoroutine(SpawnSmallCubes(cubesToBeSpawned, spawnRate, smallCubeSize));
@@ -50,7 +50,7 @@ public class SmallCubeSpawner : MonoBehaviour
 
     private int calculateCubesToBeSpawned(float volume)
     {
-        cubesToBeSpawned = (int)Mathf.Round(volume) / 10;
+        cubesToBeSpawned = ((int)Mathf.Round(volume) / 10) - 1; 
         return cubesToBeSpawned;
     }
 
