@@ -31,6 +31,10 @@ public class SmallCubeSpawner : MonoBehaviour
         cubesToBeSpawned = calculateCubesToBeSpawned(volume);
         smallCubeSize = GetSmallCubeDimensions(cubesToBeSpawned, volume);
 
+        Debug.Log($"volume: {volume}");
+        Debug.Log($"cubesToBeSpawned: {cubesToBeSpawned}");
+        Debug.Log($"smallCubeSize: {smallCubeSize}");
+
         StartCoroutine(SpawnSmallCubes(cubesToBeSpawned, spawnRate, smallCubeSize));
     }
 
@@ -44,7 +48,6 @@ public class SmallCubeSpawner : MonoBehaviour
 
             GameObject spawnedCube = Instantiate(cubePrefab, randomSpawnPosition, Quaternion.identity);
             spawnedCube.transform.localScale = smallCubeSize;
-            Debug.Log("Cube Spawned!");
 
             yield return new WaitForSeconds(delay);
         }
@@ -53,6 +56,8 @@ public class SmallCubeSpawner : MonoBehaviour
 
     private int calculateCubesToBeSpawned(float volume)
     {
+        int cubesToBeSpawned;
+
         if ((((int)Mathf.Round(volume) / 10) - 1) > 100)
         {
             cubesToBeSpawned = 100;
@@ -68,16 +73,18 @@ public class SmallCubeSpawner : MonoBehaviour
 
     private Vector3 GetSmallCubeDimensions(int cubesToBeSpawned, float volume)
     {
+        Vector3 smallCubeSize = new Vector3(0f, 0f, 0f);
+
         if (cubesToBeSpawned < 100)
         {
             smallCubeSize = new Vector3(0.22f, 0.22f, 0.22f);
             
         }
 
-        else if (cubesToBeSpawned == 100)
+        else
         {
-            float cubeVolumeInM3 = (volume / cubesToBeSpawned) / 1000;
-            float dimensions = Mathf.Pow(((float)Mathf.Round(cubeVolumeInM3 * 100) / 100), (1/3));
+            float cubeVolumeInM3 = (volume / 100) / 1000;
+            float dimensions = (float)Mathf.Pow(((float)Mathf.Round(cubeVolumeInM3 * 100) / 100), (1f/3f));
             smallCubeSize = new Vector3(x : dimensions, y : dimensions, z : dimensions);
         }
 
