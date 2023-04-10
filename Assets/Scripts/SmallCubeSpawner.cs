@@ -8,7 +8,7 @@ public class SmallCubeSpawner : MonoBehaviour
     public JsonManager jsonManager;
     public GameObject cubePrefab;
 
-    // adjust the size of the cubes if necessary
+    // adjust the size of the cubes if necessary    
     private Vector3 smallCubeSize;
 
     // varibale to determine the amount of cubes to be spawned, will be calculated
@@ -18,7 +18,7 @@ public class SmallCubeSpawner : MonoBehaviour
     private float volume;
 
     // How often do you want the cubes to be spawned?
-    private float spawnRate = 0.7f;
+    private float spawnRate = 0.5f;
 
     // Which item do you want the cubes to represent? 
     private string itemName = "Milk";
@@ -30,19 +30,25 @@ public class SmallCubeSpawner : MonoBehaviour
 
         //InvokeRepeating("SpawnCubeWrapper", 0f, spawnRate);
 
-        StartCoroutine(SpawnCube(cubesToBeSpawned, spawnRate));
+        StartCoroutine(SpawnSmallCubes(cubesToBeSpawned, spawnRate, smallCubeSize));
     }
 
 
     
-    private IEnumerator SpawnCube(int cubesToBeSpawned, float delay)
+    private IEnumerator SpawnSmallCubes(int cubesToBeSpawned, float delay, Vector3 smallCubeSize)
     {
         for (int i = 0; i <= cubesToBeSpawned; i++)
         {
             Vector3 randomSpawnPosition = new Vector3(Random.Range(-2, 2), Random.Range(5, 8), Random.Range(2, 3));
-            Instantiate(cubePrefab, randomSpawnPosition, Quaternion.identity);
+
+            GameObject spawnedCube = Instantiate(cubePrefab, randomSpawnPosition, Quaternion.identity);
+            spawnedCube.transform.localScale = smallCubeSize;
             yield return new WaitForSeconds(delay);
         }
     }   
+
+
+
+
 
 }
