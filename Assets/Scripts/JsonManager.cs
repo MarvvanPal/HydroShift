@@ -69,8 +69,8 @@ public class JsonManager : MonoBehaviour
                 {
                     EAN = 2694560410,
                     Category = "Vegetables",
-                    WaterConsumedPerPiece = 100.0f,
-                    MassPerPieceInGram = 170.0f
+                    WaterConsumedPerPiece = 170.0f,
+                    MassPerPieceInGram = 200.0f
 
                 }
             },

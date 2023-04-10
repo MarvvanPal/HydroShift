@@ -13,7 +13,7 @@ public class ChangeCubeDimensions : MonoBehaviour
     float volumeInCubicMeters;
 
     // Database lookup is here:
-    string itemName = "Beef";
+    string itemName = "Chocolate";
     public float volume;
 
 

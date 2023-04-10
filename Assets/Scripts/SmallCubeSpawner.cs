@@ -8,27 +8,26 @@ public class SmallCubeSpawner : MonoBehaviour
     public JsonManager jsonManager;
     public GameObject cubePrefab;
 
-    // adjust the size of the cubes if necessary    
+    // Adjust the size of the cubes if necessary    
     private Vector3 smallCubeSize;
 
-    // varibale to determine the amount of cubes to be spawned, will be calculated
+    // Varibale to determine the amount of cubes to be spawned, will be calculated
     private int cubesToBeSpawned;
 
-    // volume variable to be filled by a request to the json file
+    // Volume variable to be filled by a request to the json file
     private float volume;
 
     // How often do you want the cubes to be spawned?
     private float spawnRate = 0.5f;
 
-    // Which item do you want the cubes to represent? 
-    private string itemName = "Milk";
+    // The water consumption of which item do you want the cubes to represent? 
+    private string itemName = "Avocado";
 
     private void Start()
     {
         volume = jsonManager.GetWaterConsumedPerPiece(itemName);
-        cubesToBeSpawned = (int)Mathf.Round(volume) / 100;
-
-        //InvokeRepeating("SpawnCubeWrapper", 0f, spawnRate);
+        cubesToBeSpawned = calculateCubesToBeSpawned(volume) - 1;
+        smallCubeSize = GetSmallCubeDimensions(cubesToBeSpawned, volume);
 
         StartCoroutine(SpawnSmallCubes(cubesToBeSpawned, spawnRate, smallCubeSize));
     }
@@ -43,12 +42,34 @@ public class SmallCubeSpawner : MonoBehaviour
 
             GameObject spawnedCube = Instantiate(cubePrefab, randomSpawnPosition, Quaternion.identity);
             spawnedCube.transform.localScale = smallCubeSize;
+
             yield return new WaitForSeconds(delay);
         }
     }   
 
 
+    private int calculateCubesToBeSpawned(float volume)
+    {
+        cubesToBeSpawned = (int)Mathf.Round(volume) / 10;
+        return cubesToBeSpawned;
+    }
 
 
+    private Vector3 GetSmallCubeDimensions(int cubesToBeSpawned, float volume)
+    {
+        if (cubesToBeSpawned <= 100)
+        {
+            smallCubeSize = new Vector3(0.22f, 0.22f, 0.22f);
+            
+        }
 
+        else
+        {
+            float cubeVolumeInM3 = (volume / cubesToBeSpawned) / 1000;
+            float dimensions = Mathf.Pow(((float)Mathf.Round(cubeVolumeInM3 * 100) / 100), (1/3));
+            smallCubeSize = new Vector3(dimensions, dimensions, dimensions);
+        }
+
+        return smallCubeSize;
+    }
 }
