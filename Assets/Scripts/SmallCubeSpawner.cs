@@ -15,6 +15,7 @@ public class SmallCubeSpawner : MonoBehaviour
     private int cubesToBeSpawned;
 
     // Set a maximum amount of cubes to be spawned
+    private int maxAmountOfCubes;
 
     // Volume variable to be filled by a request to the json file
     private float volume;
@@ -27,9 +28,10 @@ public class SmallCubeSpawner : MonoBehaviour
 
     private void Start()
     {
+        maxAmountOfCubes = 30;
         volume = jsonManager.GetWaterConsumedPerPiece(itemName);
-        cubesToBeSpawned = calculateCubesToBeSpawned(volume);
-        smallCubeSize = GetSmallCubeDimensions(cubesToBeSpawned, volume);
+        cubesToBeSpawned = calculateCubesToBeSpawned(volume, maxAmountOfCubes);
+        smallCubeSize = GetSmallCubeDimensions(cubesToBeSpawned, maxAmountOfCubes, volume);
 
         Debug.Log($"volume: {volume}");
         Debug.Log($"cubesToBeSpawned: {cubesToBeSpawned}");
@@ -54,13 +56,13 @@ public class SmallCubeSpawner : MonoBehaviour
     }   
 
 
-    private int calculateCubesToBeSpawned(float volume)
+    private int calculateCubesToBeSpawned(float volume, int maxAmountOfCubes)
     {
         int cubesToBeSpawned;
 
-        if ((((int)Mathf.Round(volume) / 10) - 1) > 100)
+        if ((((int)Mathf.Round(volume) / 10) - 1) > maxAmountOfCubes)
         {
-            cubesToBeSpawned = 100;
+            cubesToBeSpawned = maxAmountOfCubes;
         }
 
         else
@@ -71,11 +73,11 @@ public class SmallCubeSpawner : MonoBehaviour
     }
 
 
-    private Vector3 GetSmallCubeDimensions(int cubesToBeSpawned, float volume)
+    private Vector3 GetSmallCubeDimensions(int cubesToBeSpawned, int maxAmountOfCubes, float volume)
     {
         Vector3 smallCubeSize = new Vector3(0f, 0f, 0f);
 
-        if (cubesToBeSpawned < 100)
+        if (cubesToBeSpawned < maxAmountOfCubes)
         {
             smallCubeSize = new Vector3(0.22f, 0.22f, 0.22f);
             
@@ -83,7 +85,7 @@ public class SmallCubeSpawner : MonoBehaviour
 
         else
         {
-            float cubeVolumeInM3 = (volume / 100) / 1000;
+            float cubeVolumeInM3 = (volume / (float)maxAmountOfCubes) / 1000f;
             float dimensions = Mathf.Pow(((float)Mathf.Round(cubeVolumeInM3 * 100) / 100), (1f/3f));
             smallCubeSize = new Vector3(x : dimensions, y : dimensions, z : dimensions);
         }
