@@ -1,0 +1,97 @@
+{
+    "keys": [
+        "Avocado",
+        "Chocolate",
+        "Beef",
+        "Millet",
+        "Toast",
+        "Burger",
+        "Barley",
+        "Sorghum",
+        "Cane Sugar",
+        "Tea",
+        "Coffee",
+        "Milk",
+        "Cheese"
+    ],
+    "values": [
+        {
+            "EAN": 2694560410,
+            "Category": "Vegetables",
+            "WaterConsumedPerPiece": 170.0,
+            "MassPerPieceInGram": 200.0
+        },
+        {
+            "EAN": 9568921812,
+            "Category": "Sweets",
+            "WaterConsumedPerPiece": 1700.0,
+            "MassPerPieceInGram": 100.0
+        },
+        {
+            "EAN": 3494725170,
+            "Category": "Meat",
+            "WaterConsumedPerPiece": 4650.0,
+            "MassPerPieceInGram": 300.0
+        },
+        {
+            "EAN": 8207461166,
+            "Category": "Cereal Grains",
+            "WaterConsumedPerPiece": 2500.0,
+            "MassPerPieceInGram": 500.0
+        },
+        {
+            "EAN": 8672704622,
+            "Category": "Bread",
+            "WaterConsumedPerPiece": 650.0,
+            "MassPerPieceInGram": 500.0
+        },
+        {
+            "EAN": 3587403851,
+            "Category": "Meat",
+            "WaterConsumedPerPiece": 2500.0,
+            "MassPerPieceInGram": 150.0
+        },
+        {
+            "EAN": 7533822919,
+            "Category": "Cereal Grains",
+            "WaterConsumedPerPiece": 650.0,
+            "MassPerPieceInGram": 500.0
+        },
+        {
+            "EAN": 4976045919,
+            "Category": "Cereal Grains",
+            "WaterConsumedPerPiece": 1400.0,
+            "MassPerPieceInGram": 500.0
+        },
+        {
+            "EAN": 3404068827,
+            "Category": "Baking Supplies",
+            "WaterConsumedPerPiece": 750.0,
+            "MassPerPieceInGram": 500.0
+        },
+        {
+            "EAN": 1369121209,
+            "Category": "Drinks",
+            "WaterConsumedPerPiece": 90.0,
+            "MassPerPieceInGram": 750.0
+        },
+        {
+            "EAN": 9817029772,
+            "Category": "Drinks",
+            "WaterConsumedPerPiece": 840.0,
+            "MassPerPieceInGram": 750.0
+        },
+        {
+            "EAN": 4507482257,
+            "Category": "Dairy Products",
+            "WaterConsumedPerPiece": 1000.0,
+            "MassPerPieceInGram": 1000.0
+        },
+        {
+            "EAN": 4854009171,
+            "Category": "Dairy Products",
+            "WaterConsumedPerPiece": 2500.0,
+            "MassPerPieceInGram": 500.0
+        }
+    ]
+}
