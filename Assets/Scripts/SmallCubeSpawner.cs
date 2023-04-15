@@ -84,7 +84,7 @@ public class SmallCubeSpawner : MonoBehaviour
         else
         {
             float cubeVolumeInM3 = (volume / 100) / 1000;
-            float dimensions = (float)Mathf.Pow(((float)Mathf.Round(cubeVolumeInM3 * 100) / 100), (1f/3f));
+            float dimensions = Mathf.Pow(((float)Mathf.Round(cubeVolumeInM3 * 100) / 100), (1f/3f));
             smallCubeSize = new Vector3(x : dimensions, y : dimensions, z : dimensions);
         }
 
