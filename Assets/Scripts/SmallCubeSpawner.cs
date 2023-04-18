@@ -21,7 +21,7 @@ public class SmallCubeSpawner : MonoBehaviour
     private float volume;
 
     // How often do you want the cubes to be spawned?
-    private float spawnRate = 0.3f;
+    private float spawnRate = 0.2f;
 
     // The water consumption of which item do you want the cubes to represent? 
     private string itemName = "Burger";
@@ -29,7 +29,7 @@ public class SmallCubeSpawner : MonoBehaviour
     private void Start()
     {
         maxAmountOfCubes = 30;
-        volume = jsonManager.GetWaterConsumedPerPiece(itemName);
+        volume = 1700f;
         cubesToBeSpawned = calculateCubesToBeSpawned(volume, maxAmountOfCubes);
         smallCubeSize = GetSmallCubeDimensions(cubesToBeSpawned, maxAmountOfCubes, volume);
 
@@ -46,7 +46,7 @@ public class SmallCubeSpawner : MonoBehaviour
     {
         for (int i = 0; i <= cubesToBeSpawned; i++)
         {
-            Vector3 randomSpawnPosition = new Vector3(Random.Range(-2, 2), Random.Range(5, 8), Random.Range(2, 3));
+            Vector3 randomSpawnPosition = new Vector3(Random.Range(-0.8f, -1.5f), Random.Range(-1, 1.5f), Random.Range(1, 2));
 
             GameObject spawnedCube = Instantiate(cubePrefab, randomSpawnPosition, Quaternion.identity);
             spawnedCube.transform.localScale = smallCubeSize;

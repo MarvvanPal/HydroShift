@@ -14,13 +14,13 @@ public class ChangeCubeDimensions : MonoBehaviour
 
     // Database lookup is here:
     string itemName = "Chocolate";
-    public float volume;
+    private float volume;
 
 
     // Start is called before the first frame update
     void Start()
     {
-        volume = jsonManager.GetWaterConsumedPerPiece(itemName);
+        volume = 1700f;
         volumeInCubicMeters = volInM3(volume);
         dimensionsOfCube = GetCubeDimensions(volumeInCubicMeters);
         Transform cubeTransform = GetComponent<Transform>();
