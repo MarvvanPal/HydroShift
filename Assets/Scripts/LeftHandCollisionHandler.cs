@@ -5,7 +5,7 @@ using UnityEngine;
 public class LeftHandCollisionHandler : MonoBehaviour
 {
     // the button that is about to be spawned
-    public GameObject menuButton;
+    public GameObject menuButton;    
 
     private void OnTriggerEnter(Collider other)
     {
@@ -13,9 +13,14 @@ public class LeftHandCollisionHandler : MonoBehaviour
         {
             menuButton.SetActive(true);
         }
+    }
 
-        Debug.Log("Hand triggered with: " + other.gameObject.name);
-        
+    private void OnTriggerExit(Collider other)
+    {
+        if (other.gameObject.name == "BoxHead")
+        {
+            menuButton.SetActive(false);
+        }
     }
 
 }
