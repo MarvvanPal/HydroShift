@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.18028334, g: 0.22571328, b: 0.3069217, a: 1}
+  m_IndirectSpecularColor: {r: 0.18028305, g: 0.22571313, b: 0.3069213, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -293,15 +293,15 @@ MonoBehaviour:
   orientationType: 2
   faceTrackedObjectWhileClamped: 1
   faceUserDefinedTargetTransform: 1
-  targetToFace: {fileID: 0}
+  targetToFace: {fileID: 1893423896}
   pivotAxis: 7
-  minDistance: 0.25
-  maxDistance: 0.35
-  defaultDistance: 0.3
+  minDistance: 0.45
+  maxDistance: 0.55
+  defaultDistance: 0.5
   maxViewHorizontalDegrees: 30
   maxViewVerticalDegrees: 20
   reorientWhenOutsideParameters: 1
-  orientToControllerDeadzoneDegrees: 60
+  orientToControllerDeadzoneDegrees: 20
   ignoreAngleClamp: 1
   ignoreDistanceClamp: 0
   ignoreReferencePitchAndRoll: 0
@@ -355,10 +355,10 @@ BoxCollider:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 421095933}
   m_Material: {fileID: 0}
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 4, y: 4, z: 3}
+  m_Size: {x: 10, y: 10, z: 6}
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!23 &421095938
 MeshRenderer:
@@ -417,7 +417,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 421095933}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0.33}
+  m_LocalPosition: {x: 0, y: 0, z: 0.5}
   m_LocalScale: {x: 0.05, y: 0.05, z: 0.05}
   m_Children: []
   m_Father: {fileID: 0}
@@ -805,6 +805,11 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 7200336008806126562, guid: f729a954c63f9420d811c5954d05d493, type: 3}
   m_PrefabInstance: {fileID: 1669168166}
   m_PrefabAsset: {fileID: 0}
+--- !u!4 &1893423896 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 8274910987659835391, guid: e84fbddcad80d1940898b31730d755c1, type: 3}
+  m_PrefabInstance: {fileID: 1557136208}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1929308697 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 774257670222244292, guid: 5c59d1ac3c9ef484dbd44ee94fa5425a, type: 3}
@@ -1005,7 +1010,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 774257670222244292, guid: 5c59d1ac3c9ef484dbd44ee94fa5425a, type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 774257670776418085, guid: 5c59d1ac3c9ef484dbd44ee94fa5425a, type: 3}
       propertyPath: m_RootOrder
