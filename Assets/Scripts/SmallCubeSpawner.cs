@@ -24,12 +24,12 @@ public class SmallCubeSpawner : MonoBehaviour
     private float spawnRate = 0.2f;
 
     // The water consumption of which item do you want the cubes to represent? 
-    private string itemName = "Burger";
+    private string itemName = "Chocolate";
 
     private void Start()
     {
         maxAmountOfCubes = 30;
-        volume = 1700f;
+        volume = jsonManager.GetWaterConsumedPerPiece(itemName);
         cubesToBeSpawned = calculateCubesToBeSpawned(volume, maxAmountOfCubes);
         smallCubeSize = GetSmallCubeDimensions(cubesToBeSpawned, maxAmountOfCubes, volume);
 
