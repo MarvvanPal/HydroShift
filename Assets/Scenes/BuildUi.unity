@@ -206,6 +206,14 @@ PrefabInstance:
       propertyPath: m_Name
       value: BigWaterCubeLiquid
       objectReference: {fileID: 0}
+    - target: {fileID: 234408336557095146, guid: 5f27a85cf1d724f56a702fabeb14a54c, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 234408336557095157, guid: 5f27a85cf1d724f56a702fabeb14a54c, type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 5f27a85cf1d724f56a702fabeb14a54c, type: 3}
 --- !u!1 &265316476 stripped
@@ -1289,6 +1297,10 @@ PrefabInstance:
     - target: {fileID: 7200336008806126562, guid: f729a954c63f9420d811c5954d05d493, type: 3}
       propertyPath: m_Name
       value: SmallCubeSpawner
+      objectReference: {fileID: 0}
+    - target: {fileID: 7200336008806126562, guid: f729a954c63f9420d811c5954d05d493, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7200336008806126572, guid: f729a954c63f9420d811c5954d05d493, type: 3}
       propertyPath: m_RootOrder
