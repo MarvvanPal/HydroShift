@@ -13,15 +13,18 @@ public class ChangeCubeDimensions : MonoBehaviour
     float volumeInCubicMeters;
 
     // Database lookup is here:
-    string itemName = "Chocolate";
+    string itemName = "Cereal Grains";
     private float volume;
 
 
     // Start is called before the first frame update
     void Start()
     {
-        // volume = jsonManager.GetWaterConsumedPerPiece(itemName);
-        volume = 1700f; //Workaround, because script is not loading 
+        //jsonManager = GetComponent<JsonManager>();
+        GameObject jsonManagerObject = GameObject.FindWithTag("JsonManagerTag"); // Ersetzen Sie "JsonManagerTag" durch das von Ihnen zugewiesene Tag
+        jsonManager = jsonManagerObject.GetComponent<JsonManager>();
+        volume = jsonManager.GetWaterConsumedPerPiece(itemName);
+        //volume = 1700f; //Workaround, because script is not loading 
         volumeInCubicMeters = volInM3(volume);
         dimensionsOfCube = GetCubeDimensions(volumeInCubicMeters);
         Transform cubeTransform = GetComponent<Transform>();

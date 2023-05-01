@@ -24,13 +24,16 @@ public class SmallCubeSpawner : MonoBehaviour
     private float spawnRate = 0.2f;
 
     // The water consumption of which item do you want the cubes to represent? 
-    private string itemName = "Chocolate";
+    private string itemName = "Cereal Grains";
 
     private void Start()
     {
+        //jsonManager = GetComponent<JsonManager>();
+        GameObject jsonManagerObject = GameObject.FindWithTag("JsonManagerTag"); // Ersetzen Sie "JsonManagerTag" durch das von Ihnen zugewiesene Tag
+        jsonManager = jsonManagerObject.GetComponent<JsonManager>();
         maxAmountOfCubes = 30;
-        // volume = jsonManager.GetWaterConsumedPerPiece(itemName);
-        volume = 1700f; // Workaround, because otherwise script won't run
+        volume = jsonManager.GetWaterConsumedPerPiece(itemName);
+        //volume = 1700f; // Workaround, because otherwise script won't run
         cubesToBeSpawned = calculateCubesToBeSpawned(volume, maxAmountOfCubes);
         smallCubeSize = GetSmallCubeDimensions(cubesToBeSpawned, maxAmountOfCubes, volume);
 

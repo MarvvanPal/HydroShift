@@ -222,10 +222,12 @@ public class JsonManager : MonoBehaviour
         GroceryItem item = FindItemByName(name);
         if (item != null)
         {
+            Debug.LogError($"Called items");
             return item.WaterConsumedPerPiece;
         }
         else
         {
+            Debug.LogError($"Doesn't called items");
             return 300f;
         }
     }
