@@ -8,10 +8,10 @@ EditorBuildSettings:
   - enabled: 0
     path: Assets/Scenes/SpatialMappingExample.unity
     guid: 8d84241a7f0d0514f862c8f99a1c97ba
-  - enabled: 0
+  - enabled: 1
     path: Assets/Scenes/BuildUi.unity
     guid: 7d8839f31659e4fcbb17c7d91958b6de
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/UserTesting.unity
     guid: 692610e516b6b4a4c9b9c2f9ffdc859a
   m_configObjects:

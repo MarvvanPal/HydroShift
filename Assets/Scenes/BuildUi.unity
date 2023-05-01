@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.18028305, g: 0.22571313, b: 0.3069213, a: 1}
+  m_IndirectSpecularColor: {r: 0.18028334, g: 0.22571328, b: 0.3069217, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -9721,7 +9721,7 @@ MonoBehaviour:
   reorientWhenOutsideParameters: 1
   orientToControllerDeadzoneDegrees: 60
   ignoreAngleClamp: 1
-  ignoreDistanceClamp: 0
+  ignoreDistanceClamp: 1
   ignoreReferencePitchAndRoll: 0
   pitchOffset: 0
   verticalMaxDistance: 0
@@ -10234,7 +10234,7 @@ MonoBehaviour:
   rightInteractor: {fileID: 0}
   trackedTargetType: 2
   trackedHandedness: 1
-  trackedHandJoint: 1
+  trackedHandJoint: 4
   transformOverride: {fileID: 0}
   additionalOffset: {x: 0.1, y: 0, z: 0}
   additionalRotation: {x: 0, y: 0, z: 0}
@@ -10246,7 +10246,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5092507605473776130}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: edc4e167468d3784ca3b156d73bfd764, type: 3}
   m_Name: 
