@@ -20,7 +20,8 @@ public class ChangeCubeDimensions : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        volume = jsonManager.GetWaterConsumedPerPiece(itemName);
+        // volume = jsonManager.GetWaterConsumedPerPiece(itemName);
+        volume = 1700f; //Workaround, because script is not loading 
         volumeInCubicMeters = volInM3(volume);
         dimensionsOfCube = GetCubeDimensions(volumeInCubicMeters);
         Transform cubeTransform = GetComponent<Transform>();

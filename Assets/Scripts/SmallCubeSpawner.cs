@@ -29,7 +29,8 @@ public class SmallCubeSpawner : MonoBehaviour
     private void Start()
     {
         maxAmountOfCubes = 30;
-        volume = jsonManager.GetWaterConsumedPerPiece(itemName);
+        // volume = jsonManager.GetWaterConsumedPerPiece(itemName);
+        volume = 1700; // Workaround, because otherwise script won't run
         cubesToBeSpawned = calculateCubesToBeSpawned(volume, maxAmountOfCubes);
         smallCubeSize = GetSmallCubeDimensions(cubesToBeSpawned, maxAmountOfCubes, volume);
 
