@@ -24,7 +24,7 @@ public class SmallCubeSpawner : MonoBehaviour
     private float spawnRate = 0.2f;
 
     // The water consumption of which item do you want the cubes to represent? 
-    private string itemName = "Cereal Grains";
+    private string itemName = "Avocado";
 
     private void Start()
     {

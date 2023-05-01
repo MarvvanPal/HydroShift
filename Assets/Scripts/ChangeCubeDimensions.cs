@@ -13,7 +13,7 @@ public class ChangeCubeDimensions : MonoBehaviour
     float volumeInCubicMeters;
 
     // Database lookup is here:
-    string itemName = "Cereal Grains";
+    string itemName = "Avocado";
     private float volume;
 
 
@@ -41,26 +41,30 @@ public class ChangeCubeDimensions : MonoBehaviour
     {
         float width, height, length;
 
-        if (m3 <= 2.5)
-        {
-            width = 1;
-            length = 1;
-            height = m3;
-        }
+        width = Mathf.Pow(m3, 1f / 3f);
+    length = width;
+    height = width;
 
-        else if (m3 <= 8 && m3 > 2.5)
-        {
-            width = 2;
-            length = 2;
-            height = m3 / 4;
-        }
+        // if (m3 <= 2.5)
+        // {
+        //     width = 1;
+        //     length = 1;
+        //     height = m3;
+        // }
 
-        else
-        {
-            width = 2.5f;
-            length = 2.5f;
-            height = m3 / 6.25f;
-        }
+        // else if (m3 <= 8 && m3 > 2.5)
+        // {
+        //     width = 2;
+        //     length = 2;
+        //     height = m3 / 4;
+        // }
+
+        // else
+        // {
+        //     width = 2.5f;
+        //     length = 2.5f;
+        //     height = m3 / 6.25f;
+        // }
         return Tuple.Create(width, height, length);
     }
 }
