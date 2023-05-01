@@ -13,7 +13,7 @@ public class ChangeCubeDimensions : MonoBehaviour
     float volumeInCubicMeters;
 
     // Database lookup is here:
-    string itemName = "Avocado";
+    string itemName = "Cheese";
     private float volume;
 
 
@@ -40,6 +40,8 @@ public class ChangeCubeDimensions : MonoBehaviour
     public Tuple<float, float, float> GetCubeDimensions(float m3)
     {
         float width, height, length;
+
+
 
         width = Mathf.Pow(m3, 1f / 3f);
     length = width;
