@@ -20,9 +20,6 @@ public class ChangeCubeDimensions : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        //jsonManager = GetComponent<JsonManager>();
-        GameObject jsonManagerObject = GameObject.FindWithTag("JsonManagerTag"); // Ersetzen Sie "JsonManagerTag" durch das von Ihnen zugewiesene Tag
-        jsonManager = jsonManagerObject.GetComponent<JsonManager>();
         volume = jsonManager.GetWaterConsumedPerPiece(itemName);
         //volume = 1700f; //Workaround, because script is not loading 
         volumeInCubicMeters = volInM3(volume);

@@ -24,16 +24,12 @@ public class SmallCubeSpawner : MonoBehaviour
     private float spawnRate = 0.2f;
 
     // The water consumption of which item do you want the cubes to represent? 
-    private string itemName = "Cheese";
+    private string itemName = "Avocado";
 
     private void Start()
-    {
-        //jsonManager = GetComponent<JsonManager>();
-        GameObject jsonManagerObject = GameObject.FindWithTag("JsonManagerTag"); // Ersetzen Sie "JsonManagerTag" durch das von Ihnen zugewiesene Tag
-        jsonManager = jsonManagerObject.GetComponent<JsonManager>();
+    {      
         maxAmountOfCubes = 30;
         volume = jsonManager.GetWaterConsumedPerPiece(itemName);
-        //volume = 1700f; // Workaround, because otherwise script won't run
         cubesToBeSpawned = calculateCubesToBeSpawned(volume, maxAmountOfCubes);
         smallCubeSize = GetSmallCubeDimensions(cubesToBeSpawned, maxAmountOfCubes, volume);
 
@@ -78,8 +74,7 @@ public class SmallCubeSpawner : MonoBehaviour
 
 
     private Vector3 GetSmallCubeDimensions(int cubesToBeSpawned, int maxAmountOfCubes, float volume)
-    {
-        Vector3 smallCubeSize = new Vector3(0f, 0f, 0f);
+    {       
 
         if (cubesToBeSpawned < maxAmountOfCubes)
         {
@@ -89,8 +84,8 @@ public class SmallCubeSpawner : MonoBehaviour
 
         else
         {
-            float cubeVolumeInM3 = (volume / (float)maxAmountOfCubes) / 1000f;
-            float dimensions = Mathf.Pow(((float)Mathf.Round(cubeVolumeInM3 * 100) / 100), (1f/3f));
+            float cubeVolumeInM3 = volume / maxAmountOfCubes / 1000f;
+            float dimensions = Mathf.Pow((float)Mathf.Round(cubeVolumeInM3 * 100) / 100, 1f/3f);
             smallCubeSize = new Vector3(x : dimensions, y : dimensions, z : dimensions);
         }
 

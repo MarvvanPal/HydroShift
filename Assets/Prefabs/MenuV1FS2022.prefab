@@ -771,7 +771,7 @@ GameObject:
   - component: {fileID: 6373652096814053154}
   - component: {fileID: 2378730582806011122}
   m_Layer: 0
-  m_Name: NearMenu2x1
+  m_Name: MenuV1FS2022
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
