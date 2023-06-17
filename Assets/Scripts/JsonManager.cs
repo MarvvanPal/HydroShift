@@ -35,10 +35,15 @@ public class SerializableDictionary : ISerializationCallbackReceiver
     {
         int count = Mathf.Min(keys.Count, values.Count);
         target = new Dictionary<string, GroceryItem>(count);
-        for (int i = 0; 1 < count; ++i)
+        for (int i = 0; i < count; ++i)
         {
             target[keys[i]] = values[i];
         }
+    }
+
+    public Dictionary<string, GroceryItem> ToDictionary()
+    {
+        return target;
     }
 
 }
@@ -46,157 +51,30 @@ public class SerializableDictionary : ISerializationCallbackReceiver
 
 public class JsonManager : MonoBehaviour
 {
-    //initialize the variables needed
     private string databaseFolderPath = "Assets/Database";
     private string jsonFilePath;
     private Dictionary<string, GroceryItem> groceryItems;
 
-    // Start is called before the first frame update
     void Start()
     {
         jsonFilePath = Path.Combine(databaseFolderPath, "groceryItems.json");
-        InitializeGroceryItems();
-        WriteGroceryItemsToJson();
+        LoadGroceryItemsFromJson();        
     }
 
-    private void InitializeGroceryItems()
+    private void LoadGroceryItemsFromJson()
     {
-        groceryItems = new Dictionary<string, GroceryItem>
+        if (File.Exists(jsonFilePath))
         {
-            {
-                "Avocado",
-                new GroceryItem
-                {
-                    EAN = 2694560410,
-                    Category = "Vegetables",
-                    WaterConsumedPerPiece = 170.0f,
-                    MassPerPieceInGram = 200.0f
+            string json = File.ReadAllText(jsonFilePath);
+            SerializableDictionary loadedData = JsonUtility.FromJson<SerializableDictionary>(json);
+            groceryItems = loadedData.ToDictionary();
+        }
 
-                }
-            },
-            {
-                "Chocolate",
-                new GroceryItem
-                {
-                    EAN = 9568921812,
-                    Category = "Sweets",
-                    WaterConsumedPerPiece = 1700.0f,
-                    MassPerPieceInGram = 100.0f
-                }
-            },
-            {
-                "Beef",
-                new GroceryItem
-                {
-                    EAN = 3494725170,
-                    Category = "Meat",
-                    WaterConsumedPerPiece = 4650.0f,
-                    MassPerPieceInGram = 300
-                }
-            },
-            {
-                "Millet",
-                new GroceryItem
-                {
-                    EAN = 8207461166,
-                    Category = "Cereal Grains",
-                    WaterConsumedPerPiece = 2500.0f,
-                    MassPerPieceInGram = 500.0f
-                }
-            },
-            {
-                "Toast",
-                new GroceryItem
-                {
-                    EAN = 8672704622,
-                    Category = "Bread",
-                    WaterConsumedPerPiece = 650.0f,
-                    MassPerPieceInGram = 500.0f
-                }
-            },
-            {
-                "Burger",
-                new GroceryItem
-                {
-                    EAN = 3587403851,
-                    Category = "Meat",
-                    WaterConsumedPerPiece = 2500.0f,
-                    MassPerPieceInGram = 150.0f
-                }
-            },
-            {
-                "Barley",
-                new GroceryItem
-                {
-                    EAN = 7533822919,
-                    Category = "Cereal Grains",
-                    WaterConsumedPerPiece = 650.0f,
-                    MassPerPieceInGram = 500.0f
-                }
-            },
-            {
-                "Sorghum",
-                new GroceryItem
-                {
-                    EAN = 4976045919,
-                    Category = "Cereal Grains",
-                    WaterConsumedPerPiece = 1400.0f,
-                    MassPerPieceInGram = 500.0f
-                }
-            },
-            {
-                "Cane Sugar",
-                new GroceryItem
-                {
-                    EAN = 3404068827,
-                    Category = "Baking Supplies",
-                    WaterConsumedPerPiece = 750.0f,
-                    MassPerPieceInGram = 500.0f
-                }
-            },
-            {
-                "Tea",
-                new GroceryItem
-                {
-                    EAN = 1369121209,
-                    Category = "Drinks",
-                    WaterConsumedPerPiece = 90.0f,
-                    MassPerPieceInGram = 750.0f,
-                }
-            },
-            {
-                "Coffee",
-                new GroceryItem
-                {
-                    EAN = 9817029772,
-                    Category = "Drinks",
-                    WaterConsumedPerPiece = 840.0f,
-                    MassPerPieceInGram = 750.0f
-
-                }
-            },
-            {
-                "Milk",
-                new GroceryItem
-                {
-                    EAN = 4507482257,
-                    Category = "Dairy Products",
-                    WaterConsumedPerPiece = 1000.0f,
-                    MassPerPieceInGram = 1000.0f
-                }
-            },
-            {
-                "Cheese",
-                new GroceryItem
-                {
-                    EAN = 4854009171,
-                    Category = "Dairy Products",
-                    WaterConsumedPerPiece = 2500.0f,
-                    MassPerPieceInGram = 500.0f
-                }
-            }
-        };
-    }
+        else
+        {
+            Debug.LogError($"Could not find file in {jsonFilePath}.");
+        }
+    }    
 
     private void WriteGroceryItemsToJson()
     {
