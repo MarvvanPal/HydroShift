@@ -5,8 +5,8 @@ using UnityEngine;
 public class SmallCubeSpawner : MonoBehaviour
 {
 
-    public JsonManager jsonManager;
-    public GameObject cubePrefab;
+    [SerializeField] private JsonManager jsonManager;
+    [SerializeField] private GameObject cubePrefab;
 
     // Adjust the size of the cubes if necessary    
     private Vector3 smallCubeSize;
@@ -23,7 +23,7 @@ public class SmallCubeSpawner : MonoBehaviour
     // How often do you want the cubes to be spawned?
     private float spawnRate = 0.2f;
 
-    // The water consumption of which item do you want the cubes to represent? 
+    // The water consumtion of which item do you want the cubes to represent? 
     private string itemName = "Avocado";
 
     private void Start()
