@@ -30,7 +30,7 @@ public class SmallCubeSpawner : MonoBehaviour
     {      
         maxAmountOfCubes = 30;
         volume = jsonManager.GetWaterConsumedPerPiece(itemName);
-        cubesToBeSpawned = calculateCubesToBeSpawned(volume, maxAmountOfCubes);
+        cubesToBeSpawned = CalculateCubesToBeSpawned(volume, maxAmountOfCubes);
         smallCubeSize = GetSmallCubeDimensions(cubesToBeSpawned, maxAmountOfCubes, volume);
 
         Debug.Log($"volume: {volume}");
@@ -56,7 +56,7 @@ public class SmallCubeSpawner : MonoBehaviour
     }   
 
 
-    private int calculateCubesToBeSpawned(float volume, int maxAmountOfCubes)
+    private int CalculateCubesToBeSpawned(float volume, int maxAmountOfCubes)
     {
         int cubesToBeSpawned;
 
@@ -85,7 +85,7 @@ public class SmallCubeSpawner : MonoBehaviour
         else
         {
             float cubeVolumeInM3 = volume / maxAmountOfCubes / 1000f;
-            float dimensions = Mathf.Pow((float)Mathf.Round(cubeVolumeInM3 * 100) / 100, 1f/3f);
+            float dimensions = Mathf.Pow(Mathf.Round(cubeVolumeInM3 * 100) / 100, 1f/3f);
             smallCubeSize = new Vector3(x : dimensions, y : dimensions, z : dimensions);
         }
 
