@@ -5,7 +5,7 @@ using UnityEngine;
 public class SmallCubeSpawner : MonoBehaviour
 {
 
-    [SerializeField] private JsonManager jsonManager;
+    //[SerializeField] private JsonManager jsonManager;
     [SerializeField] private GameObject cubePrefab;
 
     // Adjust the size of the cubes if necessary    
@@ -29,7 +29,7 @@ public class SmallCubeSpawner : MonoBehaviour
     private void Start()
     {      
         maxAmountOfCubes = 30;
-        volume = jsonManager.GetWaterConsumedPerPiece(itemName);
+        //volume = jsonManager.GetWaterConsumedPerPiece(itemName);
         cubesToBeSpawned = CalculateCubesToBeSpawned(volume, maxAmountOfCubes);
         smallCubeSize = GetSmallCubeDimensions(cubesToBeSpawned, maxAmountOfCubes, volume);
 

@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.IO;
 using Microsoft.MixedReality.Toolkit;
-
+/*
 [System.Serializable]
-public class GroceryItem
+public partial class GroceryItem
 {
     public long EAN;
     public string Category;
@@ -109,5 +109,5 @@ public class JsonManager : MonoBehaviour
         }
     }
 }
-
+*/
 
