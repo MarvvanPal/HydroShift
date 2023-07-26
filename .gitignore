@@ -2,6 +2,9 @@
 #
 # Get latest from https://github.com/github/gitignore/blob/main/Unity.gitignore
 #
+Files from Paul / any Mac and or Rider  User
+.DS_Store
+.idea
 [Ll]ibrary/
 [Tt]emp/
 [Oo]bj/
