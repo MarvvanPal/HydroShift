@@ -896,6 +896,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 7578052034934049747, guid: 0dc0fed2f1d3748e0a899cdd1872e761, type: 3}
+      propertyPath: apiConnectionController
+      value: 
+      objectReference: {fileID: 1793909891}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 0dc0fed2f1d3748e0a899cdd1872e761, type: 3}
 --- !u!1001 &1669168166
@@ -997,7 +1001,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 53d1fd5245f9543a0bcbec32872a3cb7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  dataUrl: http://192.168.0.5:5017/groceryitems
+  jsonManager: {fileID: 299944094}
+  dataUrl: http://localhost:5017/groceryitems
 --- !u!4 &1793909892
 Transform:
   m_ObjectHideFlags: 0
@@ -1390,7 +1395,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4311315262223154408, guid: 95659dff097a64d9bb0fa10052242413, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 0
+      value: 20
       objectReference: {fileID: 0}
     - target: {fileID: 4311315262223154408, guid: 95659dff097a64d9bb0fa10052242413, type: 3}
       propertyPath: m_AnchoredPosition.y

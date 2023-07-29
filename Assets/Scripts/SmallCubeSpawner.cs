@@ -5,13 +5,13 @@ using UnityEngine;
 public class SmallCubeSpawner : MonoBehaviour
 {
 
-    //[SerializeField] private JsonManager jsonManager;
+    [SerializeField] private JsonManager jsonManager;
     [SerializeField] private GameObject cubePrefab;
 
     // Adjust the size of the cubes if necessary    
     private Vector3 smallCubeSize;
 
-    // Varibale to determine the amount of cubes to be spawned, will be calculated
+    // Variabale to determine the amount of cubes to be spawned, will be calculated
     private int cubesToBeSpawned;
 
     // Set a maximum amount of cubes to be spawned
@@ -24,12 +24,12 @@ public class SmallCubeSpawner : MonoBehaviour
     private float spawnRate = 0.2f;
 
     // The water consumtion of which item do you want the cubes to represent? 
-    private string itemName = "Avocado";
+    public string itemName = "Cheese";
 
     private void Start()
     {      
         maxAmountOfCubes = 30;
-        //volume = jsonManager.GetWaterConsumedPerPiece(itemName);
+        volume = jsonManager.groceryItems[itemName].waterConsumedPerPiece;
         cubesToBeSpawned = CalculateCubesToBeSpawned(volume, maxAmountOfCubes);
         smallCubeSize = GetSmallCubeDimensions(cubesToBeSpawned, maxAmountOfCubes, volume);
 

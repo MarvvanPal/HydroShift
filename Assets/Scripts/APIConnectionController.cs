@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -5,16 +6,20 @@ using UnityEngine.Networking;
 
 public class APIConnectionController : MonoBehaviour
 {
-
+    [SerializeField] private JsonManager jsonManager;
     public string dataUrl = "http://192.168.0.5:5017/groceryitems";
-
-    // Rename this method to "request" and make it public so that it can be called by the json manager
-    void Start()
+    
+    internal void GetAllGroceryItems()
     {
-        StartCoroutine(MakeRequestToApi());
+        StartCoroutine(GetAllGroceryItemsFromApi());
     }
 
-    private IEnumerator MakeRequestToApi()
+    internal void GetOneGroceryItem(string itemName)
+    {
+        StartCoroutine(GetOneGroceryItemFromApi(itemName));
+    }
+
+    private IEnumerator GetAllGroceryItemsFromApi()
     {
         UnityWebRequest getRequest = UnityWebRequest.Get(dataUrl);
         getRequest.useHttpContinue = true;
@@ -32,14 +37,34 @@ public class APIConnectionController : MonoBehaviour
         Debug.LogWarning(jsonResponse);
 
         APIGroceryResponse apiAPIGroceryResponse = JsonUtility.FromJson<APIGroceryResponse>(jsonResponse);
-
-        //JsonUtility.FromJsonOverwrite(jsonResponse, apiAPIGroceryResponse);
-
-        foreach (var item in apiAPIGroceryResponse.groceryItems)
+        
+        if (apiAPIGroceryResponse != null)
         {
-            Debug.Log(item.name);
-            Debug.Log(item.details.category);
-            Debug.Log(item.details.waterConsumedPerPiece);
+            foreach (var item in apiAPIGroceryResponse.groceryItems)
+            {
+                jsonManager.AddGroceryItemToDictionary(item.name, item.details);
+            }
         }
+    }
+
+    private IEnumerator GetOneGroceryItemFromApi(string itemName)
+    {
+        UnityWebRequest getOneItemRequest = UnityWebRequest.Get(dataUrl + $"/{itemName}");
+        getOneItemRequest.useHttpContinue = true;
+        var oneItemRequest = getOneItemRequest.SendWebRequest();
+        yield return new WaitUntil(() => oneItemRequest.isDone);
+        
+        if (getOneItemRequest.result == UnityWebRequest.Result.ConnectionError ||
+            getOneItemRequest.result == UnityWebRequest.Result.ProtocolError)
+        {
+            Debug.LogError("Error while fetching data: " + getOneItemRequest.error);
+        }
+
+        string oneItemJsonResponse = getOneItemRequest.downloadHandler.text;
+        GroceryItem groceryItem = JsonUtility.FromJson<GroceryItem>(oneItemJsonResponse);
+
+        Debug.Log("Name: " + groceryItem.name);
+        Debug.Log("Water consumed: " + groceryItem.details.waterConsumedPerPiece);
+
     }
 }

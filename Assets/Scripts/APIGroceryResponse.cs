@@ -16,8 +16,8 @@ public class GroceryItem
 [Serializable]
 public sealed class GroceryItemDetails
 {
-    public long ean = 0;
+    public long ean;
     public string category = String.Empty;
-    public float waterConsumedPerPiece = 0f;
-    public float massPerPieceInGram = 0f;
+    public float waterConsumedPerPiece;
+    public float massPerPieceInGram;
 }

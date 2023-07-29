@@ -7,7 +7,7 @@ using UnityEngine;
 
 public class BigWaterCube : MonoBehaviour
 {
-    //[SerializeField] private JsonManager jsonManager;
+    [SerializeField] private JsonManager jsonManager;
 
     private string itemName = "Cheese";
     private float volume;
@@ -17,8 +17,7 @@ public class BigWaterCube : MonoBehaviour
 
     void Start()
     {
-        //volume = jsonManager.GetWaterConsumedPerPiece(itemName);
-        //volume = 1700f; //Workaround, because script is not loading 
+        volume = jsonManager.groceryItems[itemName].waterConsumedPerPiece;
         volumeInCubicMeters = volInM3(volume);
         dimensionsOfCube = GetCubeDimensions(volumeInCubicMeters);
         GetComponent<Transform>().localScale = new Vector3(dimensionsOfCube.Item1, dimensionsOfCube.Item2, dimensionsOfCube.Item3);
