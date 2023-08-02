@@ -1233,6 +1233,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: MenuButton
       objectReference: {fileID: 0}
+    - target: {fileID: 1269887036746026682, guid: 95659dff097a64d9bb0fa10052242413, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 1269887037299148891, guid: 95659dff097a64d9bb0fa10052242413, type: 3}
       propertyPath: m_RootOrder
       value: 4
@@ -1395,7 +1399,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4311315262223154408, guid: 95659dff097a64d9bb0fa10052242413, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 20
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4311315262223154408, guid: 95659dff097a64d9bb0fa10052242413, type: 3}
       propertyPath: m_AnchoredPosition.y
