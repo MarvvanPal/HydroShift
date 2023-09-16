@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e2305b64eca01f242a846e72381b866c, type: 3}
   m_Name: MeasureToolSettings
   m_EditorClassIdentifier: 
-  mode: 4
+  mode: 0
   unit: 2
   scale: 0
   lineColor: {r: 0, g: 0, b: 0, a: 1}

@@ -1,5 +1,38 @@
 {
+  "scopedRegistries": [
+    {
+      "name": "OpenUPM",
+      "url": "https://package.openupm.com",
+      "scopes": [
+        "com.atteneder"
+      ]
+    },
+    {
+      "name": "NuGet",
+      "url": "https://github.com/GlitchEnzo/NuGetForUnity.git?path=/src/NuGetForUnity",
+      "scopes": [
+        "Project"
+      ]
+    }
+  ],
   "dependencies": {
+	"com.microsoft.mixedreality.openxr": "file:MixedReality/com.microsoft.mixedreality.openxr-1.5.1.tgz",
+    "com.microsoft.mrtk.accessibility": "file:MixedReality/com.microsoft.mrtk.accessibility-1.0.0-pre.11.tgz",
+    "com.microsoft.mrtk.audio": "file:MixedReality/com.microsoft.mrtk.audio-3.0.0-pre.11.tgz",
+    "com.microsoft.mrtk.core": "file:MixedReality/com.microsoft.mrtk.core-3.0.0-pre.11.tgz",
+    "com.microsoft.mrtk.data": "file:MixedReality/com.microsoft.mrtk.data-1.0.0-pre.11.tgz",
+    "com.microsoft.mrtk.diagnostics": "file:MixedReality/com.microsoft.mrtk.diagnostics-3.0.0-pre.11.tgz",
+    "com.microsoft.mrtk.environment": "file:MixedReality/com.microsoft.mrtk.environment-3.0.0-pre.11.tgz",
+    "com.microsoft.mrtk.extendedassets": "file:MixedReality/com.microsoft.mrtk.extendedassets-3.0.0-pre.11.tgz",
+    "com.microsoft.mrtk.graphicstools.unity": "file:MixedReality/com.microsoft.mrtk.graphicstools.unity-0.4.0.tgz",
+    "com.microsoft.mrtk.spatialmanipulation": "file:MixedReality/com.microsoft.mrtk.spatialmanipulation-3.0.0-pre.11.tgz",
+    "com.microsoft.mrtk.standardassets": "file:MixedReality/com.microsoft.mrtk.standardassets-3.0.0-pre.11.tgz",
+    "com.microsoft.mrtk.tools": "file:MixedReality/com.microsoft.mrtk.tools-3.0.0-pre.11.tgz",
+    "com.microsoft.mrtk.uxcomponents": "file:MixedReality/com.microsoft.mrtk.uxcomponents-3.0.0-pre.11.tgz",
+    "com.microsoft.mrtk.uxcomponents.noncanvas": "file:MixedReality/com.microsoft.mrtk.uxcomponents.noncanvas-3.0.0-pre.11.tgz",
+    "com.microsoft.mrtk.uxcore": "file:MixedReality/com.microsoft.mrtk.uxcore-3.0.0-pre.11.tgz",
+    "com.microsoft.mrtk.windowsspeech": "file:MixedReality/com.microsoft.mrtk.windowsspeech-3.0.0-pre.11.tgz",
+	"com.microsoft.mrtk.input": "file:MixedReality/com.microsoft.mrtk.input-3.0.0-pre.11.tgz",
     "com.unity.barracuda": "https://github.com/Unity-Technologies/barracuda-release.git",
     "com.unity.collab-proxy": "2.0.4",
     "com.unity.ide.rider": "3.0.21",
@@ -41,18 +74,6 @@
     "com.unity.modules.video": "1.0.0",
     "com.unity.modules.vr": "1.0.0",
     "com.unity.modules.wind": "1.0.0",
-    "com.unity.modules.xr": "1.0.0",
-    "com.microsoft.mrtk.graphicstools.unity": "file:MixedReality/com.microsoft.mrtk.graphicstools.unity-0.5.12.tgz",
-    "org.mixedrealitytoolkit.core": "file:MixedReality/org.mixedrealitytoolkit.core-3.0.0.tgz",
-    "org.mixedrealitytoolkit.extendedassets": "file:MixedReality/org.mixedrealitytoolkit.extendedassets-3.0.0.tgz",
-    "org.mixedrealitytoolkit.input": "file:MixedReality/org.mixedrealitytoolkit.input-3.0.0.tgz",
-    "org.mixedrealitytoolkit.standardassets": "file:MixedReality/org.mixedrealitytoolkit.standardassets-3.0.0.tgz",
-    "org.mixedrealitytoolkit.tools": "file:MixedReality/org.mixedrealitytoolkit.tools-3.0.0.tgz",
-    "org.mixedrealitytoolkit.uxcomponents": "file:MixedReality/org.mixedrealitytoolkit.uxcomponents-3.0.0.tgz",
-    "org.mixedrealitytoolkit.uxcomponents.noncanvas": "file:MixedReality/org.mixedrealitytoolkit.uxcomponents.noncanvas-3.0.0.tgz",
-    "org.mixedrealitytoolkit.uxcore": "file:MixedReality/org.mixedrealitytoolkit.uxcore-3.0.0.tgz",
-    "com.microsoft.mixedreality.openxr": "file:MixedReality/com.microsoft.mixedreality.openxr-1.9.0.tgz",
-    "com.microsoft.mixedreality.input": "file:MixedReality/com.microsoft.mixedreality.input-0.9.2006.tgz",
-    "org.mixedrealitytoolkit.spatialmanipulation": "file:MixedReality/org.mixedrealitytoolkit.spatialmanipulation-3.0.0.tgz"
+    "com.unity.modules.xr": "1.0.0"
   }
 }

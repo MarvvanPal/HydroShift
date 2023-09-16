@@ -15,6 +15,7 @@ EditorBuildSettings:
     path: Assets/Scenes/UserTesting.unity
     guid: 692610e516b6b4a4c9b9c2f9ffdc859a
   m_configObjects:
+    com.unity.input.settings: {fileID: 11400000, guid: 79a7d4185e02d7e4f91bc1fed443866f, type: 2}
     com.unity.xr.arfoundation.simulation_settings: {fileID: 11400000, guid: 3c1e5bf67a727184698110b31107ba9e, type: 2}
     com.unity.xr.management.loader_settings: {fileID: 11400000, guid: eef219bc008ac894ca11b3f613ec375c, type: 2}
     com.unity.xr.openxr.settings4: {fileID: 11400000, guid: 7cb48df914f8a25409ab4c959ef51c90, type: 2}
