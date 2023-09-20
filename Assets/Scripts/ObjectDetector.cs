@@ -1,27 +1,35 @@
-using System.Collections;
-using System.Collections.Generic;
+using System;
+using System.IO;
 using Unity.Barracuda;
 using UnityEngine;
-using HoloLensCameraStream;
+// using HoloLensCameraStream;
 
 public class ObjectDetector : MonoBehaviour
 {
 
     public NNModel modelAsset;
 
+    private string imagePath;
+    private readonly string imageName = "cropped_screenshot.png";
+    private string fullPath;
+
     private Model m_RuntimeModel;
-    
-    // Start is called before the first frame update
+    private IWorker m_Worker;
+
+    private void Awake()
+    {
+        imagePath = Application.dataPath + "/Pictures";
+        fullPath = Path.Combine(imagePath, imageName);
+    }
+
     void Start()
     {
         m_RuntimeModel = ModelLoader.Load(modelAsset);
-        var worker = WorkerFactory.CreateWorker(WorkerFactory.Type.ComputePrecompiled, m_RuntimeModel);
+        m_Worker = WorkerFactory.CreateWorker(WorkerFactory.Type.ComputePrecompiled, m_RuntimeModel);
         Tensor input = new Tensor(1, 320, 320, 3);
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
+        
+        if(!File.Exists(fullPath)) Debug.LogError("File not found!");
+        byte[] imageBytes = File.ReadAllBytes(fullPath);
         
     }
 }

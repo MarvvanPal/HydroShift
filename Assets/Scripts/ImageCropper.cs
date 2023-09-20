@@ -8,7 +8,7 @@ public class ImageCropper : MonoBehaviour
 {
     private string imagePath;
     private readonly string imageName = "screenshot.png";
-    private readonly int cropSize = 256;
+    private readonly int cropSize = 320;
     private string fullPath;
 
     private void Awake()
@@ -47,7 +47,6 @@ public class ImageCropper : MonoBehaviour
             Debug.Log("Image cropped and saved successfully!");
 
         }
-        
         
         yield return new WaitForSeconds(1f);
     }
