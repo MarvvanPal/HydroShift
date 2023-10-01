@@ -8,7 +8,7 @@ public class ImageCropper : MonoBehaviour
 {
     private string imagePath;
     private readonly string imageName = "screenshot.png";
-    private readonly int cropSize = 640;
+    private readonly int cropSize = 416;
     private string fullPath;
 
     private void Awake()
