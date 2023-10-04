@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using Unity.Barracuda;
 using UnityEngine;
+
 // using HoloLensCameraStream;
 
 public class ObjectDetector : MonoBehaviour
@@ -48,7 +49,7 @@ public class ObjectDetector : MonoBehaviour
     {
         if (!File.Exists(fullPath)) Debug.LogError("File not found!");
         byte[] imageBytes = File.ReadAllBytes(fullPath);
-        Texture2D inputImage = new Texture2D(416, 416);
+        Texture2D inputImage = new Texture2D(width:416, height:416);
         inputImage.LoadImage(imageBytes);
 
         // Normalization and input tensor construction:
@@ -77,11 +78,9 @@ public class ObjectDetector : MonoBehaviour
             }
         }
 
-        Tensor inputTensor = new Tensor(1, 3, height, width, floatValues);
+        Tensor inputTensor = new Tensor(1, height, width, 3, floatValues);
         
         Debug.Log(inputTensor.shape);
-
-        //var inputTensor = new Tensor(inputImage, 3);
 
         // Inference
 
@@ -100,7 +99,7 @@ public class ObjectDetector : MonoBehaviour
                 yield return new WaitForSeconds(0.032f);
             }
         } while (hasMoreWork);
-        
+        Debug.Log("inference completed!");
         input.Dispose();
         
         callback.Invoke();
