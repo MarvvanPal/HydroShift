@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 using Unity.Barracuda;
 using UnityEngine;
 
@@ -45,7 +46,7 @@ public class ObjectDetector : MonoBehaviour
         }
     }
 
-    private void DetectObjects()
+    private async Task DetectObjects()
     {
         if (!File.Exists(fullPath)) Debug.LogError("File not found!");
         byte[] imageBytes = File.ReadAllBytes(fullPath);
@@ -74,15 +75,13 @@ public class ObjectDetector : MonoBehaviour
                     if (c == 1) floatValues[index] = color.g / 255.0f;
                     if (c == 2) floatValues[index] = color.b / 255.0f;
                 }
-                
             }
         }
 
         Tensor inputTensor = new Tensor(1, height, width, 3, floatValues);
+        await Task.Delay(32);
         
         Debug.Log(inputTensor.shape);
-
-        // Inference
 
         StartCoroutine(ForwardAsync(inputTensor, OnInferenceComplete));
     }
@@ -96,7 +95,7 @@ public class ObjectDetector : MonoBehaviour
             hasMoreWork = executor.MoveNext();
             if (hasMoreWork)
             {
-                yield return new WaitForSeconds(0.05f);
+                yield return new WaitForSeconds(0.032f);
             }
         } while (hasMoreWork);
         Debug.Log("inference completed!");
@@ -107,7 +106,7 @@ public class ObjectDetector : MonoBehaviour
 
     private void OnInferenceComplete()
     {
-        Tensor output = m_Worker.PeekOutput();
+        Tensor output = m_Worker.PeekOutput("output0");
         Debug.Log("output tensor: " + output);
         Debug.Log(output.shape);
         
@@ -129,7 +128,7 @@ public class ObjectDetector : MonoBehaviour
     }
     
 
-    private List<YoloItem> GetYoloData( Tensor tensor, COCONames cocoNames, float minProbability,
+    private List<YoloItem> GetYoloData(Tensor tensor, COCONames cocoNames, float minProbability,
         float overlapThreshold)
     {
         var boxesMeetingConfidenceLevel = new List<YoloItem>();
