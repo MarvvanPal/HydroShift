@@ -33,7 +33,7 @@ public class ObjectDetector : MonoBehaviour
     {
         Debug.Log(fullPath);
         m_RuntimeModel = ModelLoader.Load(modelAsset);
-        m_Worker = WorkerFactory.CreateWorker(WorkerFactory.Type.ComputePrecompiled, m_RuntimeModel);
+        m_Worker = WorkerFactory.CreateWorker(WorkerFactory.Type.ComputePrecompiled, m_RuntimeModel, verbose:true);
     }
 
     private void Update()
@@ -84,19 +84,19 @@ public class ObjectDetector : MonoBehaviour
 
         // Inference
 
-        StartCoroutine(ForwardAsync(m_Worker, inputTensor, OnInferenceComplete));
+        StartCoroutine(ForwardAsync(inputTensor, OnInferenceComplete));
     }
 
-    private IEnumerator ForwardAsync(IWorker modelWorker, Tensor input, Action callback)
+    private IEnumerator ForwardAsync(Tensor input, Action callback)
     {
-        var executor = modelWorker.StartManualSchedule(input);
+        var executor = m_Worker.StartManualSchedule(input);
         bool hasMoreWork;
         do
         {
             hasMoreWork = executor.MoveNext();
             if (hasMoreWork)
             {
-                yield return new WaitForSeconds(0.032f);
+                yield return new WaitForSeconds(0.05f);
             }
         } while (hasMoreWork);
         Debug.Log("inference completed!");
@@ -108,6 +108,8 @@ public class ObjectDetector : MonoBehaviour
     private void OnInferenceComplete()
     {
         Tensor output = m_Worker.PeekOutput();
+        Debug.Log("output tensor: " + output);
+        Debug.Log(output.shape);
         
         // Debugging the first 10 confidence values
         for (int i = 0; i < 10; i++)
@@ -127,7 +129,7 @@ public class ObjectDetector : MonoBehaviour
     }
     
 
-    public static List<YoloItem> GetYoloData( Tensor tensor, COCONames cocoNames, float minProbability,
+    private List<YoloItem> GetYoloData( Tensor tensor, COCONames cocoNames, float minProbability,
         float overlapThreshold)
     {
         var boxesMeetingConfidenceLevel = new List<YoloItem>();
