@@ -123,7 +123,7 @@ public class ObjectDetector : MonoBehaviour
     {
         float maxConfidence = 0;
         var boxesMeetingConfidenceLevel = new List<YoloItem>();
-        for (var i = 0; i < tensor.channels; i++)
+        for (var i = 0; i < tensor.width; i++)
         {
             YoloItem yoloItem = new YoloItem(tensor, i, cocoNamesList);
             maxConfidence = yoloItem.Confidence > maxConfidence ? yoloItem.Confidence : maxConfidence;
@@ -175,7 +175,7 @@ public class ObjectDetector : MonoBehaviour
     private static float ComputeIoU(YoloItem boxA, YoloItem boxB)
     {
         float xA = Math.Max(boxA.TopLeft.x, boxB.TopLeft.y);
-        float yA = Math.Max(boxA.TopLeft.y, boxB.TopLeft.y);
+        float yA = Math.Max(boxA.TopLeft.y, boxA.TopLeft.y);
         float xB = Math.Min(boxA.BottomRight.x, boxB.BottomRight.x);
         float yB = Math.Min(boxA.BottomRight.y, boxB.BottomRight.y);
         float intersectionArea = Math.Max(0, xB - xA + 1) * Math.Max(0, yB - yA + 1);
@@ -189,43 +189,30 @@ public class ObjectDetector : MonoBehaviour
 
     public class YoloItem
     {
-        public Vector2 Center { get; set; }
-        public Vector2 TopLeft { get; set; }
-        public Vector2 BottomRight { get; set; }
-        public Vector2 Size => BottomRight - TopLeft;
-        public float Confidence { get; set; }
-        public string MostLikelyObject { get; set; }
+        public Vector2 Center { get; }
+        public Vector2 Size { get; }
+        public Vector2 TopLeft { get; }
+        public Vector2 BottomRight { get; }
+        public float Confidence { get; }
+        public string MostLikelyObject { get; }
 
-        public YoloItem(Tensor tensor, int channel, COCONames cocoNames)
+        public YoloItem (Tensor tensorData, int boxIndex, COCONames cocoNames)
         {
-            Confidence = tensor[0, 0, channel, 4];
+            Center = new Vector2(tensorData[0, 0, boxIndex, 0], tensorData[0, 0, boxIndex, 1]);
+            Size = new Vector2(tensorData[0, 0, boxIndex, 2], tensorData[0, 0, boxIndex, 3]);
+            TopLeft = Center - Size / 2;
+            BottomRight = Center + Size / 2;
+            Confidence = tensorData[0, 0, boxIndex, 4];
 
-            int classCount = cocoNames.Map.Count;
-            float maxConfidence = Confidence;
-            int classIndex = 0;
-
-            for (int i = 0; i < classCount; i++)
+            var classProbabilities = new List<float>();
+            for (var i = 5; i < tensorData.channels; i++)
             {
-                float classConfidence = tensor[0, 0, channel, 5 + i];
-                if (classConfidence > maxConfidence)
-                {
-                    maxConfidence = classConfidence;
-                    classIndex = i;
-                }
+                classProbabilities.Add(tensorData[0, 0, boxIndex, i]);
             }
 
-            MostLikelyObject = cocoNames.Map[classIndex];
-
-            float x = tensor[0, 0, channel, 0];
-            float y = tensor[0, 0, channel, 1];
-            float width = tensor[0, 0, channel, 2];
-            float height = tensor[0, 0, channel, 3];
-
-            TopLeft = new Vector2(x - width / 2, y - height / 2);
-            BottomRight = new Vector2(x + width / 2, y + height / 2);
-
+            var maxIndex = classProbabilities.Any() ? classProbabilities.IndexOf(classProbabilities.Max()) : 0;
+            MostLikelyObject = cocoNames.Map[maxIndex];
         }
-        
     }
 
     public class COCONames
