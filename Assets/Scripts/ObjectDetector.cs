@@ -34,7 +34,7 @@ public class ObjectDetector : MonoBehaviour
     {
         Debug.Log(fullPath);
         m_RuntimeModel = ModelLoader.Load(modelAsset);
-        m_Worker = WorkerFactory.CreateWorker(WorkerFactory.Type.ComputePrecompiled, m_RuntimeModel, verbose:true);
+        m_Worker = WorkerFactory.CreateWorker(WorkerFactory.Type.ComputePrecompiled, m_RuntimeModel/*, verbose:true*/);
     }
 
     private void Update()
@@ -87,11 +87,6 @@ public class ObjectDetector : MonoBehaviour
         var outputTensor = await ForwardAsync(m_Worker, inputTensor);
         inputTensor.Dispose();
 
-        for (int i = 0; i < 10; i++)
-        {
-            Debug.Log(outputTensor[0, 0, i, 4]);
-        }
-
         List<YoloItem> detectedObjects = GetYoloData(outputTensor, cocoNamesList, 0.65f, 0.3f);
 
         foreach (YoloItem detectedObject in detectedObjects)
@@ -122,18 +117,28 @@ public class ObjectDetector : MonoBehaviour
         float overlapThreshold)
     {
         float maxConfidence = 0;
+        YoloItem maxConfidenceItem = null;
         var boxesMeetingConfidenceLevel = new List<YoloItem>();
         for (var i = 0; i < tensor.width; i++)
         {
             YoloItem yoloItem = new YoloItem(tensor, i, cocoNamesList);
-            maxConfidence = yoloItem.Confidence > maxConfidence ? yoloItem.Confidence : maxConfidence;
+            //maxConfidence = yoloItem.Confidence > maxConfidence ? yoloItem.Confidence : maxConfidence;
+            if (yoloItem.Confidence > maxConfidence)
+            {
+                maxConfidence = yoloItem.Confidence;
+                maxConfidenceItem = yoloItem;
+            }
             if (yoloItem.Confidence > minProbability)
             {
                 boxesMeetingConfidenceLevel.Add(yoloItem);
             }
         }
         Debug.LogError($"max confidence = {maxConfidence}");
-
+        if (maxConfidenceItem != null)
+        {
+            Debug.LogError($"max confidence item = {maxConfidenceItem.MostLikelyObject}");
+        }
+        
         var result = new List<YoloItem>();
         var recognizedTypes = boxesMeetingConfidenceLevel.Select(b => b.MostLikelyObject).Distinct();
         foreach (string objType in recognizedTypes)
@@ -141,9 +146,8 @@ public class ObjectDetector : MonoBehaviour
             var boxesOfThisType = boxesMeetingConfidenceLevel.Where(b => b.MostLikelyObject == objType).ToList();
             result.AddRange(RemoveOverlappingBoxes(boxesOfThisType, overlapThreshold));
         }
-
+        
         return result;
-
     }
 
     private static List<YoloItem> RemoveOverlappingBoxes(List<YoloItem> boxesMeetingConfidenceLevel,
