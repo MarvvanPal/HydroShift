@@ -82,28 +82,24 @@ public class ObjectDetector : MonoBehaviour
         await Task.Delay(32);
         
         Debug.Log(inputTensor.shape);
-
-        StartCoroutine(ForwardAsync(inputTensor, OnInferenceComplete));
-    }
-
-    private IEnumerator ForwardAsync(Tensor input, Action callback)
-    {
-        var executor = m_Worker.StartManualSchedule(input);
-        bool hasMoreWork;
-        do
-        {
-            hasMoreWork = executor.MoveNext();
-            if (hasMoreWork)
-            {
-                yield return new WaitForSeconds(0.032f);
-            }
-        } while (hasMoreWork);
-        Debug.Log("inference completed!");
-        input.Dispose();
         
-        callback.Invoke();
-    }
+        // This is what the RecognizeObjects method in the YoloProcessor class does
+        var outputTensor = await ForwardAsync(m_Worker, inputTensor);
+        inputTensor.Dispose();
 
+        for (int i = 0; i < 10; i++)
+        {
+            Debug.Log(outputTensor[0, 0, i, 4]);
+        }
+
+        List<YoloItem> detectedObjects = GetYoloData(outputTensor, cocoNames, 0.65f, 0.3f);
+
+        foreach (YoloItem detectedObject in detectedObjects)
+        {
+            Console.WriteLine(detectedObject.MostLikelyObject);
+        }
+    }
+    /*
     private void OnInferenceComplete()
     {
         Tensor output = m_Worker.PeekOutput("output0");
@@ -126,7 +122,25 @@ public class ObjectDetector : MonoBehaviour
         output.Dispose();
         m_Worker.Dispose();
     }
-    
+    */
+
+    private async Task<Tensor> ForwardAsync(IWorker modelWorker, Tensor inputTensor)
+    {
+        var worker = m_Worker.StartManualSchedule(inputTensor);
+        var randNumber = 0;
+        bool hasMoreWork;
+        do
+        {
+            hasMoreWork = worker.MoveNext();
+            if (++randNumber % 20 == 0)
+            {
+                m_Worker.FlushSchedule();
+                await Task.Delay(32);
+            }
+        } while (hasMoreWork);
+
+        return modelWorker.PeekOutput();
+    }
 
     private List<YoloItem> GetYoloData(Tensor tensor, COCONames cocoNames, float minProbability,
         float overlapThreshold)
