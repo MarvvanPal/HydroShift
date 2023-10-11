@@ -22,7 +22,7 @@ public class ObjectDetector : MonoBehaviour
     private Model m_RuntimeModel;
     private IWorker m_Worker;
 
-    private COCONames cocoNames = new ();
+    private COCONames cocoNamesList = new ();
 
     private void Awake()
     {
@@ -49,7 +49,7 @@ public class ObjectDetector : MonoBehaviour
     private async Task DetectObjects()
     {
         if (!File.Exists(fullPath)) Debug.LogError("File not found!");
-        byte[] imageBytes = File.ReadAllBytes(fullPath);
+        byte[] imageBytes = await File.ReadAllBytesAsync(fullPath);
         Texture2D inputImage = new Texture2D(width:416, height:416);
         inputImage.LoadImage(imageBytes);
 
@@ -92,37 +92,13 @@ public class ObjectDetector : MonoBehaviour
             Debug.Log(outputTensor[0, 0, i, 4]);
         }
 
-        List<YoloItem> detectedObjects = GetYoloData(outputTensor, cocoNames, 0.65f, 0.3f);
+        List<YoloItem> detectedObjects = GetYoloData(outputTensor, cocoNamesList, 0.65f, 0.3f);
 
         foreach (YoloItem detectedObject in detectedObjects)
         {
             Console.WriteLine(detectedObject.MostLikelyObject);
         }
     }
-    /*
-    private void OnInferenceComplete()
-    {
-        Tensor output = m_Worker.PeekOutput("output0");
-        Debug.Log("output tensor: " + output);
-        Debug.Log(output.shape);
-        
-        // Debugging the first 10 confidence values
-        for (int i = 0; i < 10; i++)
-        {
-            Debug.Log(output[0, 0, i, 4]);
-        }
-
-        List<YoloItem> detectedObjects = GetYoloData(output, cocoNames, 0.65f, 0.3f);
-
-        foreach (YoloItem detectedObject in detectedObjects)
-        {
-            Debug.Log(detectedObject.MostLikelyObject);
-        }
-        
-        output.Dispose();
-        m_Worker.Dispose();
-    }
-    */
 
     private async Task<Tensor> ForwardAsync(IWorker modelWorker, Tensor inputTensor)
     {
@@ -142,18 +118,21 @@ public class ObjectDetector : MonoBehaviour
         return modelWorker.PeekOutput();
     }
 
-    private List<YoloItem> GetYoloData(Tensor tensor, COCONames cocoNames, float minProbability,
+    private List<YoloItem> GetYoloData(Tensor tensor, COCONames cocoNamesList, float minProbability,
         float overlapThreshold)
     {
+        float maxConfidence = 0;
         var boxesMeetingConfidenceLevel = new List<YoloItem>();
         for (var i = 0; i < tensor.channels; i++)
         {
-            YoloItem yoloItem = new YoloItem(tensor, i, cocoNames);
+            YoloItem yoloItem = new YoloItem(tensor, i, cocoNamesList);
+            maxConfidence = yoloItem.Confidence > maxConfidence ? yoloItem.Confidence : maxConfidence;
             if (yoloItem.Confidence > minProbability)
             {
                 boxesMeetingConfidenceLevel.Add(yoloItem);
             }
         }
+        Debug.LogError($"max confidence = {maxConfidence}");
 
         var result = new List<YoloItem>();
         var recognizedTypes = boxesMeetingConfidenceLevel.Select(b => b.MostLikelyObject).Distinct();
@@ -210,6 +189,7 @@ public class ObjectDetector : MonoBehaviour
 
     public class YoloItem
     {
+        public Vector2 Center { get; set; }
         public Vector2 TopLeft { get; set; }
         public Vector2 BottomRight { get; set; }
         public Vector2 Size => BottomRight - TopLeft;
@@ -250,7 +230,7 @@ public class ObjectDetector : MonoBehaviour
 
     public class COCONames
     {
-        public List<string> Map = new()
+        public readonly List<string> Map = new()
         {
             "person",
             "bicycle",
