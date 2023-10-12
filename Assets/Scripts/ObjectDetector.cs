@@ -93,6 +93,8 @@ public class ObjectDetector : MonoBehaviour
         {
             Console.WriteLine(detectedObject.MostLikelyObject);
         }
+        outputTensor.Dispose();
+        
     }
 
     private async Task<Tensor> ForwardAsync(IWorker modelWorker, Tensor inputTensor)
