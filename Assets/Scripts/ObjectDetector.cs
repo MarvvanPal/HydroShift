@@ -48,11 +48,12 @@ public class ObjectDetector : MonoBehaviour
 
     private async Task DetectObjects()
     {
+        
         if (!File.Exists(fullPath)) Debug.LogError("File not found!");
         byte[] imageBytes = await File.ReadAllBytesAsync(fullPath);
         Texture2D inputImage = new Texture2D(width:416, height:416);
         inputImage.LoadImage(imageBytes);
-
+        /*
         // Normalization and input tensor construction:
 
         Color32[] picture = inputImage.GetPixels32();
@@ -80,6 +81,11 @@ public class ObjectDetector : MonoBehaviour
 
         Tensor inputTensor = new Tensor(1, height, width, 3, floatValues);
         await Task.Delay(32);
+        */
+
+        var renderTexture = new RenderTexture(416, 416, 24);
+        
+        
         
         Debug.Log(inputTensor.shape);
         
