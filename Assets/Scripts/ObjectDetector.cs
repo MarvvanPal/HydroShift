@@ -1,5 +1,4 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -18,11 +17,13 @@ public class ObjectDetector : MonoBehaviour
     // "cropped_screenshot.png"
     private readonly string imageName = "cropped_screenshot.png";
     private string fullPath;
+    
+    private readonly Vector2Int yoloImageSize = new Vector2Int(416, 416);
 
     private Model m_RuntimeModel;
     private IWorker m_Worker;
 
-    private COCONames cocoNamesList = new ();
+    private COCONames cocoNames = new ();
 
     private void Awake()
     {
@@ -51,49 +52,25 @@ public class ObjectDetector : MonoBehaviour
         
         if (!File.Exists(fullPath)) Debug.LogError("File not found!");
         byte[] imageBytes = await File.ReadAllBytesAsync(fullPath);
-        Texture2D inputImage = new Texture2D(width:416, height:416);
+        Texture2D inputImage = new Texture2D(width:2, height:2);
         inputImage.LoadImage(imageBytes);
-        /*
-        // Normalization and input tensor construction:
 
-        Color32[] picture = inputImage.GetPixels32();
-
-        float[] floatValues = new float[inputImage.width * inputImage.height * 3];
-
-        int width = inputImage.width;
-        int height = inputImage.height;
-
-        for (int c = 0; c < 3; c++)
-        {
-            for (int y = 0; y < height; y++)
-            {
-                for (int x = 0; x < width; x++)
-                {
-                    Color color = picture[y * width + x];
-                    int index = c * width * height + y * width + x;
-
-                    if (c == 0) floatValues[index] = color.r / 255.0f;
-                    if (c == 1) floatValues[index] = color.g / 255.0f;
-                    if (c == 2) floatValues[index] = color.b / 255.0f;
-                }
-            }
-        }
-
-        Tensor inputTensor = new Tensor(1, height, width, 3, floatValues);
+        RenderTexture renderTexture = new RenderTexture(416, 416, 24);
+        Graphics.Blit(inputImage,renderTexture);
         await Task.Delay(32);
-        */
+        Texture2D textureFromRender = ToTexture2D(renderTexture);
 
-        var renderTexture = new RenderTexture(416, 416, 24);
-        
-        
+        Tensor inputTensor = new Tensor(textureFromRender, 3);
+        await Task.Delay(32);
         
         Debug.Log(inputTensor.shape);
-        
+
         // This is what the RecognizeObjects method in the YoloProcessor class does
+
         var outputTensor = await ForwardAsync(m_Worker, inputTensor);
         inputTensor.Dispose();
 
-        List<YoloItem> detectedObjects = GetYoloData(outputTensor, cocoNamesList, 0.65f, 0.3f);
+        List<YoloItem> detectedObjects = GetYoloData(outputTensor, cocoNames, 0.65f, 0.00001f);
 
         foreach (YoloItem detectedObject in detectedObjects)
         {
@@ -101,6 +78,18 @@ public class ObjectDetector : MonoBehaviour
         }
         outputTensor.Dispose();
         
+
+    }
+
+    // https://stackoverflow.com/questions/44264468/convert-rendertexture-to-texture2d
+    private Texture2D ToTexture2D(RenderTexture rTex)
+    {
+        Texture2D tex = new Texture2D(rTex.width, rTex.height, TextureFormat.RGB24, false);
+        RenderTexture.active = rTex;
+        tex.ReadPixels(new Rect(0, 0, rTex.width, rTex.height), 0, 0);
+        tex.Apply();
+
+        return tex;
     }
 
     private async Task<Tensor> ForwardAsync(IWorker modelWorker, Tensor inputTensor)
@@ -121,7 +110,7 @@ public class ObjectDetector : MonoBehaviour
         return modelWorker.PeekOutput();
     }
 
-    private List<YoloItem> GetYoloData(Tensor tensor, COCONames cocoNamesList, float minProbability,
+    private List<YoloItem> GetYoloData(Tensor tensor, COCONames cocoNames, float minProbability,
         float overlapThreshold)
     {
         float maxConfidence = 0;
@@ -129,7 +118,7 @@ public class ObjectDetector : MonoBehaviour
         var boxesMeetingConfidenceLevel = new List<YoloItem>();
         for (var i = 0; i < tensor.width; i++)
         {
-            YoloItem yoloItem = new YoloItem(tensor, i, cocoNamesList);
+            YoloItem yoloItem = new YoloItem(tensor, i, cocoNames);
             //maxConfidence = yoloItem.Confidence > maxConfidence ? yoloItem.Confidence : maxConfidence;
             if (yoloItem.Confidence > maxConfidence)
             {
@@ -155,14 +144,19 @@ public class ObjectDetector : MonoBehaviour
             result.AddRange(RemoveOverlappingBoxes(boxesOfThisType, overlapThreshold));
         }
         
+        tensor.Dispose();
+        
+        Debug.LogError($"Boxes Meeting confidence level: {boxesMeetingConfidenceLevel.Count}");
+        
         return result;
+        
     }
 
-    private static List<YoloItem> RemoveOverlappingBoxes(List<YoloItem> boxesMeetingConfidenceLevel,
-        float overlapThreshold)
+    private static List<YoloItem> RemoveOverlappingBoxes(List<YoloItem> boxesMeetingConfidenceLevel, float overlapThreshold)
     {
         boxesMeetingConfidenceLevel.Sort((a,b) => b.Confidence.CompareTo(a.Confidence));
         var selectedBoxes = new List<YoloItem>();
+        Debug.LogError($"Boxes meeting confidence level: {boxesMeetingConfidenceLevel.Count}");
         while (boxesMeetingConfidenceLevel.Count > 0)
         {
             var currentBox = boxesMeetingConfidenceLevel[0];
@@ -223,13 +217,18 @@ public class ObjectDetector : MonoBehaviour
             }
 
             var maxIndex = classProbabilities.Any() ? classProbabilities.IndexOf(classProbabilities.Max()) : 0;
-            MostLikelyObject = cocoNames.Map[maxIndex];
+            MostLikelyObject = cocoNames.GetName(maxIndex);
         }
     }
 
     public class COCONames
     {
-        public readonly List<string> Map = new()
+        public string GetName(int mapIndex)
+        {
+            return detectableObjects[mapIndex];
+        }
+        
+        private readonly List<string> detectableObjects = new()
         {
             "person",
             "bicycle",
