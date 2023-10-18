@@ -18,12 +18,12 @@ public class ObjectDetector : MonoBehaviour
     private readonly string imageName = "cropped_screenshot.png";
     private string fullPath;
     
-    private readonly Vector2Int yoloImageSize = new Vector2Int(416, 416);
+    // private readonly Vector2Int yoloImageSize = new Vector2Int(416, 416);
 
     private Model m_RuntimeModel;
     private IWorker m_Worker;
 
-    private COCONames cocoNames = new ();
+    private readonly COCONames cocoNames = new ();
 
     private void Awake()
     {
@@ -69,6 +69,7 @@ public class ObjectDetector : MonoBehaviour
 
         var outputTensor = await ForwardAsync(m_Worker, inputTensor);
         inputTensor.Dispose();
+        Debug.LogError("Input Tensor has been disposed!");
 
         List<YoloItem> detectedObjects = GetYoloData(outputTensor, cocoNames, 0.65f, 0.00001f);
 
@@ -76,8 +77,9 @@ public class ObjectDetector : MonoBehaviour
         {
             Console.WriteLine(detectedObject.MostLikelyObject);
         }
+        Debug.LogError(outputTensor.shape);
         outputTensor.Dispose();
-        
+        Debug.LogError("Output Tensor has been disposed!");
 
     }
 
