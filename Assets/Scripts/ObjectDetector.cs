@@ -65,13 +65,11 @@ public class ObjectDetector : MonoBehaviour
         
         Debug.Log(inputTensor.shape);
 
-        // This is what the RecognizeObjects method in the YoloProcessor class does
-
         var outputTensor = await ForwardAsync(m_Worker, inputTensor);
         inputTensor.Dispose();
         Debug.LogError("Input Tensor has been disposed!");
 
-        List<YoloItem> detectedObjects = GetYoloData(outputTensor, cocoNames, 0.65f, 0.00001f);
+        List<YoloItem> detectedObjects = GetYoloData(outputTensor, cocoNames, 0.65f, 0.3f);
 
         foreach (YoloItem detectedObject in detectedObjects)
         {
@@ -79,6 +77,7 @@ public class ObjectDetector : MonoBehaviour
         }
         Debug.LogError(outputTensor.shape);
         outputTensor.Dispose();
+        m_Worker.Dispose();
         Debug.LogError("Output Tensor has been disposed!");
 
     }
@@ -93,7 +92,8 @@ public class ObjectDetector : MonoBehaviour
 
         return tex;
     }
-
+    
+    // run the inference
     private async Task<Tensor> ForwardAsync(IWorker modelWorker, Tensor inputTensor)
     {
         var worker = m_Worker.StartManualSchedule(inputTensor);
@@ -110,6 +110,7 @@ public class ObjectDetector : MonoBehaviour
         } while (hasMoreWork);
 
         return modelWorker.PeekOutput();
+        
     }
 
     private List<YoloItem> GetYoloData(Tensor tensor, COCONames cocoNames, float minProbability,
@@ -158,7 +159,6 @@ public class ObjectDetector : MonoBehaviour
     {
         boxesMeetingConfidenceLevel.Sort((a,b) => b.Confidence.CompareTo(a.Confidence));
         var selectedBoxes = new List<YoloItem>();
-        Debug.LogError($"Boxes meeting confidence level: {boxesMeetingConfidenceLevel.Count}");
         while (boxesMeetingConfidenceLevel.Count > 0)
         {
             var currentBox = boxesMeetingConfidenceLevel[0];

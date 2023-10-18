@@ -21,11 +21,11 @@ public class ImageCropper : MonoBehaviour
     {
         if (Input.GetKeyDown("l"))
         {
-            StartCoroutine(CropImage());
+            CropImage();
         }
     }
 
-    private IEnumerator CropImage()
+    private void CropImage()
     {
         if (!File.Exists(fullPath)) Debug.LogError("File does not exist!");
         {
@@ -43,11 +43,8 @@ public class ImageCropper : MonoBehaviour
 
             byte[] bytes = croppedTexture.EncodeToPNG();
             File.WriteAllBytes(Path.Combine(imagePath, "cropped_" + imageName), bytes);
-            
-            Debug.Log("Image cropped and saved successfully!");
 
+            Debug.Log("Image cropped and saved successfully!");
         }
-        
-        yield return new WaitForSeconds(1f);
     }
 }
