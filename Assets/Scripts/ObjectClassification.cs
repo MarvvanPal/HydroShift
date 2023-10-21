@@ -19,7 +19,7 @@ public class ObjectClassification : MonoBehaviour
     private string fullPath;
 
     private Model runTimeModel;
-    private IWorker worker;
+    private IWorker m_Worker;
 
     private List<string> labels;
 
@@ -33,7 +33,7 @@ public class ObjectClassification : MonoBehaviour
     {
         Debug.Log(fullPath);
         runTimeModel = ModelLoader.Load(model);
-        worker = WorkerFactory.CreateWorker(WorkerFactory.Type.ComputePrecompiled, runTimeModel);
+        m_Worker = WorkerFactory.CreateWorker(WorkerFactory.Type.ComputePrecompiled, runTimeModel);
         LoadLabels();
     }
 
@@ -50,10 +50,6 @@ public class ObjectClassification : MonoBehaviour
     {
         string stringsFromTheTextFile = labelTextFile.text;
         labels = ParseClasses(stringsFromTheTextFile);
-        for(int i = 0; i < 10; i++)
-        {
-            Debug.Log(labels[i]);
-        }
     }
 
     private List<string> ParseClasses(string input)
@@ -85,11 +81,12 @@ public class ObjectClassification : MonoBehaviour
         Tensor inputTensor = new Tensor(textureFromRender, 3);
         await Task.Delay(32);
         Debug.Log(inputTensor.shape);
-        Debug.Log($"label count: {labels.Count()}");
-        worker.Execute(inputTensor);
-        Tensor outputTensor = worker.PeekOutput();
-        Debug.Log(outputTensor.shape);
-        // shape of the output: (n:1, h:1, w:1, c:1000)
+        
+        // run the inference
+        Tensor outputTensor = await ForwardAsync(m_Worker, inputTensor);
+        
+        Debug.Log(outputTensor.shape); // shape of the outputTensor: (n:1, h:1, w:1, c:1000)
+        
 
         for (int i = 0; i < 100; i++)
         {
@@ -103,7 +100,6 @@ public class ObjectClassification : MonoBehaviour
         float[] probabilities = outputTensor.ToReadOnlyArray();
         await Task.Delay(32);
         
-
         int maxIndex = 0;
         float maxProb = probabilities[0];
         for (int i = 1; i < probabilities.Length; i++)
@@ -117,7 +113,9 @@ public class ObjectClassification : MonoBehaviour
         
         Debug.Log($"Class: {labels[maxIndex]}, Probability: {maxProb}");
 
+        inputTensor.Dispose();
         outputTensor.Dispose();
+        m_Worker.Dispose();
 
     }
     
@@ -131,4 +129,21 @@ public class ObjectClassification : MonoBehaviour
         return tex;
     }
     
+    private async Task<Tensor> ForwardAsync(IWorker modelWorker, Tensor inputTensor)
+    {
+        var worker = m_Worker.StartManualSchedule(inputTensor);
+        var randNumber = 0;
+        bool hasMoreWork;
+        do
+        {
+            hasMoreWork = worker.MoveNext();
+            if (++randNumber % 20 == 0)
+            {
+                m_Worker.FlushSchedule();
+                await Task.Delay(32);
+            }
+        } while (hasMoreWork);
+        
+        return modelWorker.PeekOutput();
+    }
 }
