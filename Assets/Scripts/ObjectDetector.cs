@@ -23,7 +23,7 @@ public class ObjectDetector : MonoBehaviour
     private Model m_RuntimeModel;
     private IWorker m_Worker;
 
-    private readonly COCONames cocoNames = new ();
+    private static readonly COCONames cocoNamesList = new ();
 
     private void Awake()
     {
@@ -69,11 +69,11 @@ public class ObjectDetector : MonoBehaviour
         inputTensor.Dispose();
         Debug.LogError("Input Tensor has been disposed!");
 
-        List<YoloItem> detectedObjects = GetYoloData(outputTensor, cocoNames, 0.65f, 0.3f);
+        List<YoloItem> detectedObjects = GetYoloData(outputTensor, 0.65f, 0.3f);
 
         foreach (YoloItem detectedObject in detectedObjects)
         {
-            Console.WriteLine(detectedObject.MostLikelyObject);
+            Debug.Log($"class: {detectedObject.MostLikelyObject} -- confidence:{detectedObject.Confidence}");
         }
         Debug.LogError(outputTensor.shape);
         outputTensor.Dispose();
@@ -113,15 +113,14 @@ public class ObjectDetector : MonoBehaviour
         
     }
 
-    private List<YoloItem> GetYoloData(Tensor tensor, COCONames cocoNames, float minProbability,
-        float overlapThreshold)
+    private List<YoloItem> GetYoloData(Tensor tensor, float minProbability, float overlapThreshold)
     {
         float maxConfidence = 0;
         YoloItem maxConfidenceItem = null;
         var boxesMeetingConfidenceLevel = new List<YoloItem>();
         for (var i = 0; i < tensor.width; i++)
         {
-            YoloItem yoloItem = new YoloItem(tensor, i, cocoNames);
+            YoloItem yoloItem = new YoloItem(tensor, i);
             //maxConfidence = yoloItem.Confidence > maxConfidence ? yoloItem.Confidence : maxConfidence;
             if (yoloItem.Confidence > maxConfidence)
             {
@@ -204,7 +203,7 @@ public class ObjectDetector : MonoBehaviour
         public float Confidence { get; }
         public string MostLikelyObject { get; }
 
-        public YoloItem (Tensor tensorData, int boxIndex, COCONames cocoNames)
+        public YoloItem (Tensor tensorData, int boxIndex)
         {
             Center = new Vector2(tensorData[0, 0, boxIndex, 0], tensorData[0, 0, boxIndex, 1]);
             Size = new Vector2(tensorData[0, 0, boxIndex, 2], tensorData[0, 0, boxIndex, 3]);
@@ -219,7 +218,7 @@ public class ObjectDetector : MonoBehaviour
             }
 
             var maxIndex = classProbabilities.Any() ? classProbabilities.IndexOf(classProbabilities.Max()) : 0;
-            MostLikelyObject = cocoNames.GetName(maxIndex);
+            MostLikelyObject = cocoNamesList.GetName(maxIndex);
         }
     }
 
