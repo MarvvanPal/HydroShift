@@ -6,19 +6,19 @@ using System.IO;
 public class JsonManager : MonoBehaviour
 {
     [SerializeField] private APIConnectionController apiConnectionController;
-    public Dictionary<string, GroceryItemDetails> groceryItems = new();
+    public readonly Dictionary<string, GroceryItemDetails> GroceryItems = new();
     
     // For later, one item request use:
     //private Dictionary<string, GroceryItemDetails> oneGroceryItem = new();
     void Start()
     {
-        groceryItems.Clear();
+        GroceryItems.Clear();
         apiConnectionController.GetAllGroceryItems();
     }
 
     internal void AddGroceryItemToDictionary(string itemName, GroceryItemDetails details)
     {
-        groceryItems.Add(itemName, details);
+        GroceryItems.Add(itemName, details);
     }
     
     

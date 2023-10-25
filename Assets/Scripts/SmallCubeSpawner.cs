@@ -11,7 +11,7 @@ public class SmallCubeSpawner : MonoBehaviour
     // Adjust the size of the cubes if necessary    
     private Vector3 smallCubeSize;
 
-    // Variabale to determine the amount of cubes to be spawned, will be calculated
+    // Variable to determine the amount of cubes to be spawned, will be calculated
     private int cubesToBeSpawned;
 
     // Set a maximum amount of cubes to be spawned
@@ -29,7 +29,7 @@ public class SmallCubeSpawner : MonoBehaviour
     private void Start()
     {      
         maxAmountOfCubes = 30;
-        volume = jsonManager.groceryItems[itemName].waterConsumedPerPiece;
+        volume = jsonManager.GroceryItems[itemName].waterConsumedPerPiece;
         cubesToBeSpawned = CalculateCubesToBeSpawned(volume, maxAmountOfCubes);
         smallCubeSize = GetSmallCubeDimensions(cubesToBeSpawned, maxAmountOfCubes, volume);
 

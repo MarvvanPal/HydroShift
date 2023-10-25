@@ -17,7 +17,7 @@ public class BigWaterCube : MonoBehaviour
 
     void Start()
     {
-        volume = jsonManager.groceryItems[itemName].waterConsumedPerPiece;
+        volume = jsonManager.GroceryItems[itemName].waterConsumedPerPiece;
         volumeInCubicMeters = volInM3(volume);
         dimensionsOfCube = GetCubeDimensions(volumeInCubicMeters);
         GetComponent<Transform>().localScale = new Vector3(dimensionsOfCube.Item1, dimensionsOfCube.Item2, dimensionsOfCube.Item3);
