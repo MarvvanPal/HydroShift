@@ -23,7 +23,7 @@ public class ObjectDetector : MonoBehaviour
     private Model m_RuntimeModel;
     private IWorker m_Worker;
 
-    private static readonly COCONames cocoNamesList = new ();
+    private static readonly CocoNames cocoNamesList = new ();
 
     private void Awake()
     {
@@ -222,13 +222,13 @@ public class ObjectDetector : MonoBehaviour
         }
     }
 
-    public class COCONames
+    private class CocoNames
     {
         public string GetName(int mapIndex)
         {
             return detectableObjects[mapIndex];
         }
-        
+
         private readonly List<string> detectableObjects = new()
         {
             "person",
