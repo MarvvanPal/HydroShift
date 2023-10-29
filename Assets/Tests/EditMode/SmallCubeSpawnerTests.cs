@@ -23,14 +23,17 @@ public class SmallCubeSpawnerTests
         Object.DestroyImmediate(testObject);
     }
 
-    [Test]
-    public void CalculateCubesToBeSpawned_ReturnsCorrectValue()
+    [TestCase(50f, 30, ExpectedResult = 5)]
+    [TestCase(100f, 30, ExpectedResult = 10)]
+    [TestCase(300f, 30, ExpectedResult = 30)]
+    [TestCase(10, 30, ExpectedResult = 1)]
+    [TestCase(0, 30, ExpectedResult = 0)]
+    [TestCase(-10, 30, ExpectedResult = 0)]
+    [TestCase(10000, 30, ExpectedResult = 30)]
+    public int CalculateCubesToBeSpawned_ReturnsCorrectValue(float testVolume, int testMaxCubes)
     {
-        float testVolume = 50f;
-        int testMaxCubes = 30;
-
-        int result = spawner.CalculateCubesToBeSpawned(testVolume, testMaxCubes);
-        
-        Assert.AreEqual(4, result);
+        return spawner.CalculateCubesToBeSpawned(testVolume, testMaxCubes);
     }
+    
+    
 }

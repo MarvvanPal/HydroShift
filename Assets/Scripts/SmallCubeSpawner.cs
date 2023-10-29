@@ -56,18 +56,9 @@ public class SmallCubeSpawner : MonoBehaviour
 
     internal int CalculateCubesToBeSpawned(float volume, int maxAmountOfCubes)
     {
-        int cubesToBeSpawned;
-
-        if ((((int)Mathf.Round(volume) / 10) - 1) > maxAmountOfCubes)
-        {
-            cubesToBeSpawned = maxAmountOfCubes;
-        }
-
-        else
-        {
-            cubesToBeSpawned = ((int)Mathf.Round(volume) / 10) - 1;
-        }
-        return cubesToBeSpawned;
+        int cubesToBeSpawned = Mathf.RoundToInt(volume / 10);
+        
+        return Mathf.Clamp(cubesToBeSpawned, 0, maxAmountOfCubes);
     }
 
 
