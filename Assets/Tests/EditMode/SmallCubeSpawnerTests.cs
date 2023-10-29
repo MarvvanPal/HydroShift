@@ -1,9 +1,11 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using NUnit.Framework;
 using UnityEngine;
 using UnityEngine.TestTools;
+using Object = UnityEngine.Object;
 
 public class SmallCubeSpawnerTests
 {
@@ -35,5 +37,15 @@ public class SmallCubeSpawnerTests
         return spawner.CalculateCubesToBeSpawned(testVolume, testMaxCubes);
     }
     
+    [TestCaseSource(nameof(GetSmallCubeDimensionsTestCases))]
+    public (float, float, float) GetSmallCubeDimensions_ReturnsCorrectDimensions(int cubesToBeSpawned, int maxAmountOfCubes, float volume)
+    {
+        Vector3 result = spawner.GetSmallCubeDimensions(cubesToBeSpawned, maxAmountOfCubes, volume);
+        return (result.x, result.y, result.z);
+    }
     
+    public static IEnumerable<TestCaseData> GetSmallCubeDimensionsTestCases()
+    {
+        yield return new TestCaseData(10, 30, 50f).Returns((0.22f, 0.22f, 0.22f));
+    }
 }
