@@ -1,6 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using UnityEngine;
+[assembly: InternalsVisibleTo("EditMode")]
+
 
 public class SmallCubeSpawner : MonoBehaviour
 {
@@ -33,14 +36,9 @@ public class SmallCubeSpawner : MonoBehaviour
         cubesToBeSpawned = CalculateCubesToBeSpawned(volume, maxAmountOfCubes);
         smallCubeSize = GetSmallCubeDimensions(cubesToBeSpawned, maxAmountOfCubes, volume);
 
-        Debug.Log($"volume: {volume}");
-        Debug.Log($"cubesToBeSpawned: {cubesToBeSpawned}");
-        Debug.Log($"smallCubeSize: {smallCubeSize}");
-
         StartCoroutine(SpawnSmallCubes(cubesToBeSpawned, spawnRate, smallCubeSize));
     }
-
-
+    
     
     private IEnumerator SpawnSmallCubes(int cubesToBeSpawned, float delay, Vector3 smallCubeSize)
     {
@@ -56,7 +54,7 @@ public class SmallCubeSpawner : MonoBehaviour
     }   
 
 
-    private int CalculateCubesToBeSpawned(float volume, int maxAmountOfCubes)
+    internal int CalculateCubesToBeSpawned(float volume, int maxAmountOfCubes)
     {
         int cubesToBeSpawned;
 
@@ -73,7 +71,7 @@ public class SmallCubeSpawner : MonoBehaviour
     }
 
 
-    private Vector3 GetSmallCubeDimensions(int cubesToBeSpawned, int maxAmountOfCubes, float volume)
+    internal Vector3 GetSmallCubeDimensions(int cubesToBeSpawned, int maxAmountOfCubes, float volume)
     {       
 
         if (cubesToBeSpawned < maxAmountOfCubes)
