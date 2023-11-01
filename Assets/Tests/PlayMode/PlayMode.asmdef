@@ -17,7 +17,8 @@
         "Microsoft.MixedReality.Toolkit.UXCore.Runtime.Tests",
         "Microsoft.MixedReality.Toolkit.Input",
         "Microsoft.MixedReality.Toolkit.SpatialManipulation",
-        "Unity.XR.Interaction.Toolkit"
+        "Unity.XR.Interaction.Toolkit",
+        "Microsoft.MixedReality.Toolkit.Tools"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

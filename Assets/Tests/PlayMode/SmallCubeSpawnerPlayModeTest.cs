@@ -4,10 +4,13 @@ using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using NUnit.Framework;
 using UnityEngine;
+using UnityEngine.XR;
 using UnityEngine.TestTools;
 using UnityEngine.UI;
-using Object = UnityEngine.Object;
 using Microsoft.MixedReality.Toolkit.UX;
+using Microsoft.MixedReality.Toolkit.SpatialManipulation;
+using Object = UnityEngine.Object;
+
 
 
 public class SmallCubeSpawnerPlayModeTest
@@ -34,8 +37,7 @@ public class SmallCubeSpawnerPlayModeTest
         PressableButton spawnButton = GameObject.Find("SpawnSmallCubes").GetComponent<PressableButton>();
         
         //invoke the OnClicked() event of the spawnButton component
-        //need to invoke the event I guess
-        spawnButton.
+        //spawnButton.ForceSetToggled(true);
         
         yield return new WaitForSeconds(spawner.spawnRate * (spawner.maxAmountOfCubes + 1));
     }
