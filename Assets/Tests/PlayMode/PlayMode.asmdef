@@ -18,7 +18,8 @@
         "Microsoft.MixedReality.Toolkit.Input",
         "Microsoft.MixedReality.Toolkit.SpatialManipulation",
         "Unity.XR.Interaction.Toolkit",
-        "Microsoft.MixedReality.Toolkit.Tools"
+        "Microsoft.MixedReality.Toolkit.Tools",
+        "Microsoft.MixedReality.Toolkit.Core"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

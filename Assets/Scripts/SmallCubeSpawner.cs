@@ -12,7 +12,6 @@ public class SmallCubeSpawner : MonoBehaviour
 
     [SerializeField] public JsonManager jsonManager;
     [SerializeField] private GameObject cubePrefab;
-    [SerializeField] private PressableButton spawnButton;
 
     // Adjust the size of the cubes if necessary    
     private Vector3 smallCubeSize;
@@ -21,7 +20,7 @@ public class SmallCubeSpawner : MonoBehaviour
     private int cubesToBeSpawned;
 
     // Set a maximum amount of cubes to be spawned
-    public int maxAmountOfCubes;
+    public int maxAmountOfCubes = 30;
 
     // Volume variable to be filled by a request to the json file
     private float volume;
@@ -31,17 +30,15 @@ public class SmallCubeSpawner : MonoBehaviour
 
     // The water consumption of which item do you want the cubes to represent? 
     public string itemName = "Cheese";
-
+    
     private void Start()
-    {      
-        maxAmountOfCubes = 30;
+    {
         volume = jsonManager.GroceryItems[itemName].waterConsumedPerPiece;
         cubesToBeSpawned = CalculateCubesToBeSpawned(volume, maxAmountOfCubes);
         smallCubeSize = GetSmallCubeDimensions(cubesToBeSpawned, maxAmountOfCubes, volume);
         
         StartCoroutine(SpawnSmallCubes(cubesToBeSpawned, spawnRate, smallCubeSize));
     }
-    
     
     private IEnumerator SpawnSmallCubes(int cubesToBeSpawned, float delay, Vector3 smallCubeSize)
     {
