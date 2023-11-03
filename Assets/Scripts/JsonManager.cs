@@ -7,7 +7,7 @@ public class JsonManager : MonoBehaviour
 {
     [SerializeField] private APIConnectionController apiConnectionController;
     public readonly Dictionary<string, GroceryItemDetails> GroceryItems = new();
-    
+    /*
     // For later, one item request use:
     //private Dictionary<string, GroceryItemDetails> oneGroceryItem = new();
     void Start()
@@ -20,6 +20,7 @@ public class JsonManager : MonoBehaviour
     {
         GroceryItems.Add(itemName, details);
     }
+    */
 }
 
 

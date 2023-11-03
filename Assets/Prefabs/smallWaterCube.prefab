@@ -55,5 +55,9 @@ PrefabInstance:
       propertyPath: m_Name
       value: smallWaterCube
       objectReference: {fileID: 0}
+    - target: {fileID: 6141009818829904772, guid: 59a6c57baaa1d1a4a9a58a947479b0f0, type: 3}
+      propertyPath: m_TagString
+      value: smallWaterCube
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 59a6c57baaa1d1a4a9a58a947479b0f0, type: 3}

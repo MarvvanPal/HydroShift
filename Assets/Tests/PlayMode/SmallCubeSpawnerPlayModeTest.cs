@@ -11,9 +11,8 @@ using Object = UnityEngine.Object;
 public class SmallCubeSpawnerPlayModeTest
 {
     private SmallCubeSpawner spawner;
-    private PressableButton spawnButton;
-    private GameObject mainMenuPrefab;
-    private GameObject mainMenu;
+    private GameObject testCubePrefab;
+    private string smallCubePrefabTag;
 
     [SetUp]
     public void SetUp()
@@ -21,12 +20,10 @@ public class SmallCubeSpawnerPlayModeTest
         GameObject spawnerObject = new GameObject();
         spawner = spawnerObject.AddComponent<SmallCubeSpawner>();
         Object.Destroy(spawner.jsonManager);
-        spawner.jsonManager = spawnerObject.AddComponent<MockJsonManager>();
-        spawner.gameObject.SetActive(false);
-        
-        mainMenuPrefab = AssetDatabase.LoadAssetAtPath<GameObject>("Assets/Prefabs/MainMenu.prefab");
-        mainMenu = GameObject.Instantiate(mainMenuPrefab);
-        spawnButton = mainMenu.GetComponentInChildren<PressableButton>();
+
+        testCubePrefab = AssetDatabase.LoadAssetAtPath<GameObject>("Assets/Prefabs/smallWaterCube.prefab");
+        smallCubePrefabTag = "smallWaterCube";
+        spawner.cubePrefab = testCubePrefab;
     }
 
     [TearDown]
@@ -36,36 +33,45 @@ public class SmallCubeSpawnerPlayModeTest
     }
 
     [UnityTest]
-    public IEnumerator SpawnerCreatesCorrectNumberOfCubes()
+    public IEnumerator SpawnerCreatesCorrectNumberOfCubes(
+        [ValueSource(nameof(SpawnSmallCubeCases))] TestCaseData testData)
     {
-        
-        spawnButton.ForceSetToggled(true);
+        float volume = (float)testData.Arguments[0];
+        int expectedCubes = (int)testData.Arguments[1];
+
+        spawner.volume = volume;
+
+        spawner.SpawnSmallCubes();
         
         yield return new WaitForSeconds(spawner.spawnRate * (spawner.maxAmountOfCubes + 1));
 
-        int spawnedCubes = GameObject.FindGameObjectsWithTag("smallWaterCube").Length;
-        Assert.AreEqual(spawner.maxAmountOfCubes, spawnedCubes);
+        int spawnedCubes = GameObject.FindGameObjectsWithTag(smallCubePrefabTag).Length;
+        Assert.AreEqual(expectedCubes, spawnedCubes);
+        
+        yield return CleanUpCubes(smallCubePrefabTag);
+    }
+
+    private static IEnumerator CleanUpCubes(string tag)
+    {
+        GameObject[] cubes = GameObject.FindGameObjectsWithTag(tag);
+
+        for (int i = 0; i < cubes.Length; i++)
+        {
+            Object.Destroy(cubes[i]);
+        }
+
+        yield return new WaitForEndOfFrame();
+    }
+    
+    
+    private static IEnumerable<TestCaseData> SpawnSmallCubeCases()
+    {
+        yield return new TestCaseData(1700f, 30).SetName("SpawnSmallCubes_Volume1700_Expect17");
+        yield return new TestCaseData(200f, 20).SetName("SpawnSmallCubes_Volume1000_Expect10");
+        yield return new TestCaseData(50f, 5).SetName("SpawnSmallCubes_Volume1700_Expect17");
     }
 
 }
 
-public class MockJsonManager : JsonManager
-{
-    public Dictionary<string, GroceryItem> GroceryItems =
-        new()
-        {
-            { 
-                "Cheese", 
-                new GroceryItem 
-                { 
-                    name = "Cheese",
-                    details = new GroceryItemDetails 
-                    { 
-                        waterConsumedPerPiece = 100f 
-                    } 
-                } 
-            }
-        };
-}
 
 

@@ -42,7 +42,7 @@ public class APIConnectionController : MonoBehaviour
         {
             foreach (var item in apiAPIGroceryResponse.groceryItems)
             {
-                jsonManager.AddGroceryItemToDictionary(item.name, item.details);
+                //jsonManager.AddGroceryItemToDictionary(item.name, item.details);
             }
         }
     }
