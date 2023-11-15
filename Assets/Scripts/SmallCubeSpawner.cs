@@ -37,7 +37,6 @@ public class SmallCubeSpawner : MonoBehaviour
         volume = 2500f/*jsonManager.GroceryItems[itemName].waterConsumedPerPiece*/;
         cubesToBeSpawned = CalculateCubesToBeSpawned(volume);
         smallCubeSize = GetSmallCubeDimensions(volume, cubesToBeSpawned);
-        Debug.Log(smallCubeSize);
         
         StartCoroutine(SpawningSmallCubes(spawnRate));
     }
