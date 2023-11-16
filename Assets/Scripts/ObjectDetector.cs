@@ -23,7 +23,7 @@ public class ObjectDetector : MonoBehaviour
     private Model m_RuntimeModel;
     private IWorker m_Worker;
 
-    private static readonly CocoNames cocoNamesList = new ();
+    private static readonly COCONames CocoNamesList = new ();
 
     private void Awake()
     {
@@ -121,7 +121,6 @@ public class ObjectDetector : MonoBehaviour
         for (var i = 0; i < tensor.width; i++)
         {
             YoloItem yoloItem = new YoloItem(tensor, i);
-            //maxConfidence = yoloItem.Confidence > maxConfidence ? yoloItem.Confidence : maxConfidence;
             if (yoloItem.Confidence > maxConfidence)
             {
                 maxConfidence = yoloItem.Confidence;
@@ -218,99 +217,7 @@ public class ObjectDetector : MonoBehaviour
             }
 
             var maxIndex = classProbabilities.Any() ? classProbabilities.IndexOf(classProbabilities.Max()) : 0;
-            MostLikelyObject = cocoNamesList.GetName(maxIndex);
+            MostLikelyObject = CocoNamesList.GetName(maxIndex);
         }
-    }
-
-    private class CocoNames
-    {
-        public string GetName(int mapIndex)
-        {
-            return detectableObjects[mapIndex];
-        }
-
-        private readonly List<string> detectableObjects = new()
-        {
-            "person",
-            "bicycle",
-            "car",
-            "motorcycle",
-            "airplane",
-            "bus",
-            "train",
-            "truck",
-            "boat",
-            "traffic light",
-            "fire hydrant",
-            "stop sign",
-            "parking meter",
-            "bench",
-            "bird",
-            "cat",
-            "dog",
-            "horse",
-            "sheep",
-            "cow",
-            "elephant",
-            "bear",
-            "zebra",
-            "giraffe",
-            "backpack",
-            "umbrella",
-            "handbag",
-            "tie",
-            "suitcase",
-            "frisbee",
-            "skis",
-            "snowboard",
-            "sports ball",
-            "kite",
-            "baseball bat",
-            "baseball glove",
-            "skateboard",
-            "surfboard",
-            "tennis racket",
-            "bottle",
-            "wine glass",
-            "cup",
-            "fork",
-            "knife",
-            "spoon",
-            "bowl",
-            "banana",
-            "apple",
-            "sandwich",
-            "orange",
-            "broccoli",
-            "carrot",
-            "hot dog",
-            "pizza",
-            "donut",
-            "cake",
-            "chair",
-            "couch",
-            "potted plant",
-            "bed",
-            "dining table",
-            "toilet",
-            "tv",
-            "laptop",
-            "mouse",
-            "remote",
-            "keyboard",
-            "cell phone",
-            "microwave",
-            "oven",
-            "toaster",
-            "sink",
-            "refrigerator",
-            "book",
-            "clock",
-            "vase",
-            "scissors",
-            "teddy bear",
-            "hair drier",
-            "toothbrush"
-        };
     }
 }
