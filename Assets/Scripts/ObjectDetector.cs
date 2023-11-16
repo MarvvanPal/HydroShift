@@ -58,14 +58,14 @@ public class ObjectDetector : MonoBehaviour
         RenderTexture renderTexture = new RenderTexture(416, 416, 24);
         Graphics.Blit(inputImage,renderTexture);
         await Task.Delay(32);
-        Texture2D textureFromRender = ToTexture2D(renderTexture);
+        Texture2D textureFromRender = ConvertToTexture2D(renderTexture);
 
         Tensor inputTensor = new Tensor(textureFromRender, 3);
         await Task.Delay(32);
         
         Debug.Log(inputTensor.shape);
 
-        var outputTensor = await ForwardAsync(m_Worker, inputTensor);
+        var outputTensor = await RunModelOnTensor(m_Worker, inputTensor);
         inputTensor.Dispose();
         Debug.LogError("Input Tensor has been disposed!");
 
@@ -83,7 +83,7 @@ public class ObjectDetector : MonoBehaviour
     }
 
     // https://stackoverflow.com/questions/44264468/convert-rendertexture-to-texture2d
-    private Texture2D ToTexture2D(RenderTexture rTex)
+    private Texture2D ConvertToTexture2D(RenderTexture rTex)
     {
         Texture2D tex = new Texture2D(rTex.width, rTex.height, TextureFormat.RGB24, false);
         RenderTexture.active = rTex;
@@ -94,7 +94,8 @@ public class ObjectDetector : MonoBehaviour
     }
     
     // run the inference
-    private async Task<Tensor> ForwardAsync(IWorker modelWorker, Tensor inputTensor)
+    // from https://github.com/Unity-Technologies/barracuda-release/issues/236#issue-1049168663
+    private async Task<Tensor> RunModelOnTensor(IWorker modelWorker, Tensor inputTensor)
     {
         var worker = m_Worker.StartManualSchedule(inputTensor);
         var randNumber = 0;
@@ -161,38 +162,13 @@ public class ObjectDetector : MonoBehaviour
             yoloItemsSortedByConfidence.RemoveAt(0);
 
             yoloItemsSortedByConfidence = yoloItemsSortedByConfidence
-                .Where(yoloItem => ComputeIoU(yoloItemWithHighestConfidence, yoloItem) < overlapThreshold).ToList();
+                .Where(yoloItem => CalculateIoU(yoloItemWithHighestConfidence, yoloItem) < overlapThreshold).ToList();
         }
 
         return suppressedYoloItems;
     }
 
-    private static List<YoloItem> RemoveOverlappingBoxes(List<YoloItem> boxesMeetingConfidenceLevel, float overlapThreshold)
-    {
-        boxesMeetingConfidenceLevel.Sort((a,b) => b.Confidence.CompareTo(a.Confidence));
-        var selectedBoxes = new List<YoloItem>();
-        while (boxesMeetingConfidenceLevel.Count > 0)
-        {
-            var currentBox = boxesMeetingConfidenceLevel[0];
-            selectedBoxes.Add(currentBox);
-            boxesMeetingConfidenceLevel.RemoveAt(0);
-
-            for (var i = 0; i < boxesMeetingConfidenceLevel.Count; i++)
-            {
-                YoloItem otherBox = boxesMeetingConfidenceLevel[i];
-                float overlap = ComputeIoU(currentBox, otherBox);
-                if (overlap > overlapThreshold)
-                {
-                    boxesMeetingConfidenceLevel.RemoveAt(i);
-                    i--;
-                }
-            }
-        }
-
-        return selectedBoxes;
-    }
-
-    private static float ComputeIoU(YoloItem boxA, YoloItem boxB)
+    private static float CalculateIoU(YoloItem boxA, YoloItem boxB)
     {
         float xA = Math.Max(boxA.TopLeft.x, boxB.TopLeft.y);
         float yA = Math.Max(boxA.TopLeft.y, boxA.TopLeft.y);
