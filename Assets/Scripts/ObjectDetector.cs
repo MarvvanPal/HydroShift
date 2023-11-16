@@ -115,27 +115,8 @@ public class ObjectDetector : MonoBehaviour
 
     private List<YoloItem> GetYoloData(Tensor tensor, float minProbability, float overlapThreshold)
     {
-        float maxConfidence = 0;
-        YoloItem maxConfidenceItem = null;
-        var boxesMeetingConfidenceLevel = new List<YoloItem>();
-        for (var i = 0; i < tensor.width; i++)
-        {
-            YoloItem yoloItem = new YoloItem(tensor, i, CocoNamesList);
-            if (yoloItem.Confidence > maxConfidence)
-            {
-                maxConfidence = yoloItem.Confidence;
-                maxConfidenceItem = yoloItem;
-            }
-            if (yoloItem.Confidence > minProbability)
-            {
-                boxesMeetingConfidenceLevel.Add(yoloItem);
-            }
-        }
-        Debug.LogError($"max confidence = {maxConfidence}");
-        if (maxConfidenceItem != null)
-        {
-            Debug.LogError($"max confidence item = {maxConfidenceItem.MostLikelyObject}");
-        }
+       
+        var boxesMeetingConfidenceLevel = ExtractYoloItemsFromTensor(tensor);
         
         var result = new List<YoloItem>();
         var recognizedTypes = boxesMeetingConfidenceLevel.Select(b => b.MostLikelyObject).Distinct();
@@ -151,6 +132,18 @@ public class ObjectDetector : MonoBehaviour
         
         return result;
         
+    }
+
+    private List<YoloItem> ExtractYoloItemsFromTensor(Tensor tensor)
+    {
+        List<YoloItem> yoloItems = new List<YoloItem>();
+        for (var i = 0; i <= tensor.width; i++)
+        {
+            YoloItem yoloItem = new YoloItem(tensor, i, CocoNamesList);
+            yoloItems.Add(yoloItem);
+        }
+
+        return yoloItems;
     }
 
     private static List<YoloItem> RemoveOverlappingBoxes(List<YoloItem> boxesMeetingConfidenceLevel, float overlapThreshold)
