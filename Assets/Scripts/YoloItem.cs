@@ -4,6 +4,8 @@ using System.Linq;
 using Unity.Barracuda;
 using UnityEngine;
 
+
+
 public class YoloItem
 {
     public Vector2 Center { get; }
@@ -20,14 +22,18 @@ public class YoloItem
         TopLeft = Center - Size / 2;
         BottomRight = Center + Size / 2;
         Confidence = tensorData[0, 0, boxIndex, 4];
-
-        var classProbabilities = new List<float>();
-        for (var i = 5; i < tensorData.channels; i++)
+        
+        float maxProbability = float.MinValue;
+        int maxIndex = 0;
+        for (int i = 5; i < tensorData.channels; i++)
         {
-            classProbabilities.Add(tensorData[0, 0, boxIndex, i]);
+            float probability = tensorData[0, 0, boxIndex, i];
+            if (!(probability > maxProbability)) continue;
+            maxProbability = probability;
+            maxIndex = i - 5;
         }
-
-        var maxIndex = classProbabilities.Any() ? classProbabilities.IndexOf(classProbabilities.Max()) : 0;
+        
         MostLikelyObject = cocoNames.GetName(maxIndex);
+        
     }
 }

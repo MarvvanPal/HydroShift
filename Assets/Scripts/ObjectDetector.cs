@@ -23,7 +23,7 @@ public class ObjectDetector : MonoBehaviour
     private Model m_RuntimeModel;
     private IWorker m_Worker;
 
-    private static readonly COCONames CocoNamesList;
+    private static readonly COCONames CocoNamesList = new();
 
     private void Awake()
     {
@@ -69,13 +69,13 @@ public class ObjectDetector : MonoBehaviour
         inputTensor.Dispose();
         Debug.LogError("Input Tensor has been disposed!");
 
-        List<YoloItem> detectedObjects = GetYoloData(outputTensor, 0.65f, 0.3f);
+        List<YoloItem> detectedObjects = GetYoloData(outputTensor, 0.65f, 0.5f);
 
         foreach (YoloItem detectedObject in detectedObjects)
         {
             Debug.Log($"class: {detectedObject.MostLikelyObject} -- confidence:{detectedObject.Confidence}");
         }
-        Debug.LogError(outputTensor.shape);
+        
         outputTensor.Dispose();
         m_Worker.Dispose();
         Debug.LogError("Output Tensor has been disposed!");
@@ -113,37 +113,26 @@ public class ObjectDetector : MonoBehaviour
         
     }
 
-    private List<YoloItem> GetYoloData(Tensor tensor, float minConfidence, float overlapThreshold)
+    private List<YoloItem> GetYoloData(Tensor outPutTensor, float minConfidence, float overlapThreshold)
     {
-       
-        List<YoloItem> yoloItems = ExtractYoloItemsFromTensor(tensor);
-        List<YoloItem> yoloItemsMeetingConfidenceLevel = FilterItemsByConfidence(yoloItems, minConfidence);
+        List<YoloItem> allYoloItems = ExtractYoloItemsFromTensor(outPutTensor);
+        List<YoloItem> yoloItemsMeetingConfidenceLevel = FilterItemsByConfidence(allYoloItems, minConfidence);
+        List<YoloItem> finalYoloItems = NonMaximumSuppression(yoloItemsMeetingConfidenceLevel, overlapThreshold);
         
-        var result = new List<YoloItem>();
-        var recognizedTypes = yoloItemsMeetingConfidenceLevel.Select(b => b.MostLikelyObject).Distinct();
-        foreach (string objType in recognizedTypes)
-        {
-            var boxesOfThisType = yoloItemsMeetingConfidenceLevel.Where(b => b.MostLikelyObject == objType).ToList();
-            result.AddRange(RemoveOverlappingBoxes(boxesOfThisType, overlapThreshold));
-        }
-        
-        tensor.Dispose();
-        
-        Debug.LogError($"Boxes Meeting confidence level: {yoloItemsMeetingConfidenceLevel.Count}");
-        
-        return result;
+        return finalYoloItems;
         
     }
 
     private List<YoloItem> ExtractYoloItemsFromTensor(Tensor tensor)
     {
         List<YoloItem> yoloItems = new List<YoloItem>();
-        for (var i = 0; i <= tensor.width; i++)
+        for (int i = 0; i < tensor.width; i++)
         {
             YoloItem yoloItem = new YoloItem(tensor, i, CocoNamesList);
             yoloItems.Add(yoloItem);
+            
         }
-
+        
         return yoloItems;
     }
 
@@ -158,6 +147,24 @@ public class ObjectDetector : MonoBehaviour
             }
         }
         return yoloItemsMeetingConfidenceLevel;
+    }
+
+    private List<YoloItem> NonMaximumSuppression(List<YoloItem> yoloItems, float overlapThreshold)
+    {
+        List<YoloItem> suppressedYoloItems = new List<YoloItem>();
+        List<YoloItem> yoloItemsSortedByConfidence =
+            yoloItems.OrderByDescending(yoloItem => yoloItem.Confidence).ToList();
+        while (yoloItemsSortedByConfidence.Any())
+        {
+            YoloItem yoloItemWithHighestConfidence = yoloItemsSortedByConfidence.First();
+            suppressedYoloItems.Add(yoloItemWithHighestConfidence);
+            yoloItemsSortedByConfidence.RemoveAt(0);
+
+            yoloItemsSortedByConfidence = yoloItemsSortedByConfidence
+                .Where(yoloItem => ComputeIoU(yoloItemWithHighestConfidence, yoloItem) < overlapThreshold).ToList();
+        }
+
+        return suppressedYoloItems;
     }
 
     private static List<YoloItem> RemoveOverlappingBoxes(List<YoloItem> boxesMeetingConfidenceLevel, float overlapThreshold)
