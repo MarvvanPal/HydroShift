@@ -49,11 +49,9 @@ public class ObjectDetector : MonoBehaviour
 
     private async Task DetectObjects()
     {
-        
-        if (!File.Exists(fullPath)) Debug.LogError("File not found!");
-        byte[] imageBytes = await File.ReadAllBytesAsync(fullPath);
-        Texture2D inputImage = new Texture2D(width:2, height:2);
-        inputImage.LoadImage(imageBytes);
+
+        byte[] imageBytes = await LoadImage(fullPath);
+        Texture2D inputImage = PreprocessImage(imageBytes);
 
         RenderTexture renderTexture = new RenderTexture(416, 416, 24);
         Graphics.Blit(inputImage,renderTexture);
@@ -80,6 +78,25 @@ public class ObjectDetector : MonoBehaviour
         m_Worker.Dispose();
         Debug.LogError("Output Tensor has been disposed!");
 
+    }
+
+    private async Task<byte[]> LoadImage(string imagePath)
+    {
+        if (!File.Exists(imagePath))
+        {
+            Debug.LogError("Image not found");
+            return null;
+        }
+
+        byte[] imageBytes = await File.ReadAllBytesAsync(imagePath);
+        return imageBytes;
+    }
+
+    private Texture2D PreprocessImage(byte[] imageByteArray)
+    {
+        Texture2D inputImageAsTexture2D = new Texture2D(width: 2, height: 2);
+        inputImageAsTexture2D.LoadImage(imageByteArray);
+        return inputImageAsTexture2D;
     }
 
     // https://stackoverflow.com/questions/44264468/convert-rendertexture-to-texture2d
