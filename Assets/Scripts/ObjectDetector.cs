@@ -113,22 +113,23 @@ public class ObjectDetector : MonoBehaviour
         
     }
 
-    private List<YoloItem> GetYoloData(Tensor tensor, float minProbability, float overlapThreshold)
+    private List<YoloItem> GetYoloData(Tensor tensor, float minConfidence, float overlapThreshold)
     {
        
-        var boxesMeetingConfidenceLevel = ExtractYoloItemsFromTensor(tensor);
+        List<YoloItem> yoloItems = ExtractYoloItemsFromTensor(tensor);
+        List<YoloItem> yoloItemsMeetingConfidenceLevel = FilterItemsByConfidence(yoloItems, minConfidence);
         
         var result = new List<YoloItem>();
-        var recognizedTypes = boxesMeetingConfidenceLevel.Select(b => b.MostLikelyObject).Distinct();
+        var recognizedTypes = yoloItemsMeetingConfidenceLevel.Select(b => b.MostLikelyObject).Distinct();
         foreach (string objType in recognizedTypes)
         {
-            var boxesOfThisType = boxesMeetingConfidenceLevel.Where(b => b.MostLikelyObject == objType).ToList();
+            var boxesOfThisType = yoloItemsMeetingConfidenceLevel.Where(b => b.MostLikelyObject == objType).ToList();
             result.AddRange(RemoveOverlappingBoxes(boxesOfThisType, overlapThreshold));
         }
         
         tensor.Dispose();
         
-        Debug.LogError($"Boxes Meeting confidence level: {boxesMeetingConfidenceLevel.Count}");
+        Debug.LogError($"Boxes Meeting confidence level: {yoloItemsMeetingConfidenceLevel.Count}");
         
         return result;
         
@@ -144,6 +145,19 @@ public class ObjectDetector : MonoBehaviour
         }
 
         return yoloItems;
+    }
+
+    private List<YoloItem> FilterItemsByConfidence(List<YoloItem> yoloItems, float minConfidence)
+    {
+        List<YoloItem> yoloItemsMeetingConfidenceLevel = new();
+        foreach (YoloItem yoloItem in yoloItems)
+        {
+            if (yoloItem.Confidence > minConfidence)
+            {
+                yoloItemsMeetingConfidenceLevel.Add(yoloItem);
+            }
+        }
+        return yoloItemsMeetingConfidenceLevel;
     }
 
     private static List<YoloItem> RemoveOverlappingBoxes(List<YoloItem> boxesMeetingConfidenceLevel, float overlapThreshold)
