@@ -23,7 +23,7 @@ public class ObjectDetector : MonoBehaviour
     private Model m_RuntimeModel;
     private IWorker m_Worker;
 
-    private static readonly COCONames CocoNamesList = new ();
+    private static readonly COCONames CocoNamesList;
 
     private void Awake()
     {
@@ -120,7 +120,7 @@ public class ObjectDetector : MonoBehaviour
         var boxesMeetingConfidenceLevel = new List<YoloItem>();
         for (var i = 0; i < tensor.width; i++)
         {
-            YoloItem yoloItem = new YoloItem(tensor, i);
+            YoloItem yoloItem = new YoloItem(tensor, i, CocoNamesList);
             if (yoloItem.Confidence > maxConfidence)
             {
                 maxConfidence = yoloItem.Confidence;
@@ -191,33 +191,5 @@ public class ObjectDetector : MonoBehaviour
 
         return intersectionArea / unionArea;
 
-    }
-
-    public class YoloItem
-    {
-        public Vector2 Center { get; }
-        public Vector2 Size { get; }
-        public Vector2 TopLeft { get; }
-        public Vector2 BottomRight { get; }
-        public float Confidence { get; }
-        public string MostLikelyObject { get; }
-
-        public YoloItem (Tensor tensorData, int boxIndex)
-        {
-            Center = new Vector2(tensorData[0, 0, boxIndex, 0], tensorData[0, 0, boxIndex, 1]);
-            Size = new Vector2(tensorData[0, 0, boxIndex, 2], tensorData[0, 0, boxIndex, 3]);
-            TopLeft = Center - Size / 2;
-            BottomRight = Center + Size / 2;
-            Confidence = tensorData[0, 0, boxIndex, 4];
-
-            var classProbabilities = new List<float>();
-            for (var i = 5; i < tensorData.channels; i++)
-            {
-                classProbabilities.Add(tensorData[0, 0, boxIndex, i]);
-            }
-
-            var maxIndex = classProbabilities.Any() ? classProbabilities.IndexOf(classProbabilities.Max()) : 0;
-            MostLikelyObject = CocoNamesList.GetName(maxIndex);
-        }
     }
 }
