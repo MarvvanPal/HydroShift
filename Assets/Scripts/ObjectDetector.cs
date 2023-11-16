@@ -52,13 +52,7 @@ public class ObjectDetector : MonoBehaviour
 
         byte[] imageBytes = await LoadImage(fullPath);
         Texture2D inputImage = PreprocessImage(imageBytes);
-
-        RenderTexture renderTexture = new RenderTexture(416, 416, 24);
-        Graphics.Blit(inputImage,renderTexture);
-        await Task.Delay(32);
-        Texture2D textureFromRender = ConvertToTexture2D(renderTexture);
-
-        Tensor inputTensor = new Tensor(textureFromRender, 3);
+        Tensor inputTensor = CreateTensorFromTexture(inputImage);
         await Task.Delay(32);
         
         Debug.Log(inputTensor.shape);
@@ -97,6 +91,14 @@ public class ObjectDetector : MonoBehaviour
         Texture2D inputImageAsTexture2D = new Texture2D(width: 2, height: 2);
         inputImageAsTexture2D.LoadImage(imageByteArray);
         return inputImageAsTexture2D;
+    }
+
+    private Tensor CreateTensorFromTexture(Texture2D imageTexture)
+    {
+        RenderTexture renderTexture = new RenderTexture(416, 416, 24);
+        Graphics.Blit(imageTexture, renderTexture);
+        Texture2D textureFromRender = ConvertToTexture2D(renderTexture);
+        return new Tensor(textureFromRender, 3);
     }
 
     // https://stackoverflow.com/questions/44264468/convert-rendertexture-to-texture2d
