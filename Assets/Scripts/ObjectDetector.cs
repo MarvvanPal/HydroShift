@@ -6,8 +6,6 @@ using System.Threading.Tasks;
 using Unity.Barracuda;
 using UnityEngine;
 
-// using HoloLensCameraStream;
-
 public class ObjectDetector : MonoBehaviour
 {
 
@@ -49,40 +47,41 @@ public class ObjectDetector : MonoBehaviour
 
     private async Task DetectObjects()
     {
-
+        
+        // image loading and preprocessing, input tensor construction
         byte[] imageBytes = await LoadImage(fullPath);
         Texture2D inputImage = PreprocessImage(imageBytes);
         Tensor inputTensor = CreateTensorFromTexture(inputImage);
-        await Task.Delay(32);
         
-        Debug.Log(inputTensor.shape);
-
+        // running model inference on the input Tensor
         var outputTensor = await RunModelOnTensor(m_Worker, inputTensor);
-        inputTensor.Dispose();
-        Debug.LogError("Input Tensor has been disposed!");
-
-        List<YoloItem> detectedObjects = GetYoloData(outputTensor, 0.65f, 0.5f);
+        
+        // Getting all the detections out of the outputTensor
+        List<YoloItem> detectedObjects = AnalyzeModelOutput(outputTensor, 0.65f, 0.5f);
 
         foreach (YoloItem detectedObject in detectedObjects)
         {
             Debug.Log($"class: {detectedObject.MostLikelyObject} -- confidence:{detectedObject.Confidence}");
         }
         
+        // Disposing to free up GPU resources
+        inputTensor.Dispose();
+        Debug.Log("Input Tensor has been disposed!");
         outputTensor.Dispose();
+        Debug.Log("Output Tensor has been disposed!");
         m_Worker.Dispose();
-        Debug.LogError("Output Tensor has been disposed!");
-
+        Debug.Log("Model Worker has been disposed!");
     }
 
-    private async Task<byte[]> LoadImage(string imagePath)
+    private async Task<byte[]> LoadImage(string pathToImage)
     {
-        if (!File.Exists(imagePath))
+        if (!File.Exists(pathToImage))
         {
             Debug.LogError("Image not found");
             return null;
         }
 
-        byte[] imageBytes = await File.ReadAllBytesAsync(imagePath);
+        byte[] imageBytes = await File.ReadAllBytesAsync(pathToImage);
         return imageBytes;
     }
 
@@ -133,7 +132,7 @@ public class ObjectDetector : MonoBehaviour
         
     }
 
-    private List<YoloItem> GetYoloData(Tensor outPutTensor, float minConfidence, float overlapThreshold)
+    private List<YoloItem> AnalyzeModelOutput(Tensor outPutTensor, float minConfidence, float overlapThreshold)
     {
         List<YoloItem> allYoloItems = ExtractYoloItemsFromTensor(outPutTensor);
         List<YoloItem> yoloItemsMeetingConfidenceLevel = FilterItemsByConfidence(allYoloItems, minConfidence);
@@ -168,7 +167,8 @@ public class ObjectDetector : MonoBehaviour
         }
         return yoloItemsMeetingConfidenceLevel;
     }
-
+    
+    // 
     private List<YoloItem> NonMaximumSuppression(List<YoloItem> yoloItems, float overlapThreshold)
     {
         List<YoloItem> suppressedYoloItems = new List<YoloItem>();
@@ -186,7 +186,8 @@ public class ObjectDetector : MonoBehaviour
 
         return suppressedYoloItems;
     }
-
+    
+    // Intersection over Union calculation
     private static float CalculateIoU(YoloItem boxA, YoloItem boxB)
     {
         float xA = Math.Max(boxA.TopLeft.x, boxB.TopLeft.y);
