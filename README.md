@@ -82,7 +82,7 @@ In order to get started with this project, one should follow these steps:
 - run the Project from the Unity Hub
 - locate the scene **PrototypeV2** in Assets/Scenes, double click and enter play mode
 
-### Technical Documentation
+### Technical Documentation for SE_08
 The goal of this project is that we use the capabilites of the Hololens 2 to visualize the hidden water consumption of Grocery Items. 
 In order to do that we need:
 - get images from the main camera of the device
