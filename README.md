@@ -83,6 +83,7 @@ In order to get started with this project, one should follow these steps:
 - locate the scene **PrototypeV2** in Assets/Scenes, double click and enter play mode
 
 ### Technical Documentation for SE_08
+An overview of the system architecture can be found here: https://www.figma.com/file/eOPIP002QOYJnc2bmU3ifz/Hydroshift-Level-2-System-Architecture?type=whiteboard&node-id=0%3A1&t=jZ2OTHbEOrPCinxC-1
 The goal of this project is that we use the capabilites of the Hololens 2 to visualize the hidden water consumption of Grocery Items. 
 In order to do that we need:
 - get images from the main camera of the device
