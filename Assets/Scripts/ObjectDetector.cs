@@ -6,8 +6,6 @@ using System.Threading.Tasks;
 using Unity.Barracuda;
 using UnityEngine;
 
-// using HoloLensCameraStream;
-
 public class ObjectDetector : MonoBehaviour
 {
 
@@ -23,7 +21,7 @@ public class ObjectDetector : MonoBehaviour
     private Model m_RuntimeModel;
     private IWorker m_Worker;
 
-    private static readonly CocoNames cocoNamesList = new ();
+    private static readonly COCONames CocoNamesList = new();
 
     private void Awake()
     {
@@ -50,40 +48,60 @@ public class ObjectDetector : MonoBehaviour
     private async Task DetectObjects()
     {
         
-        if (!File.Exists(fullPath)) Debug.LogError("File not found!");
-        byte[] imageBytes = await File.ReadAllBytesAsync(fullPath);
-        Texture2D inputImage = new Texture2D(width:2, height:2);
-        inputImage.LoadImage(imageBytes);
-
-        RenderTexture renderTexture = new RenderTexture(416, 416, 24);
-        Graphics.Blit(inputImage,renderTexture);
-        await Task.Delay(32);
-        Texture2D textureFromRender = ToTexture2D(renderTexture);
-
-        Tensor inputTensor = new Tensor(textureFromRender, 3);
-        await Task.Delay(32);
+        // image loading and preprocessing, input tensor construction
+        byte[] imageBytes = await LoadImage(fullPath);
+        Texture2D inputImage = PreprocessImage(imageBytes);
+        Tensor inputTensor = CreateTensorFromTexture(inputImage);
         
-        Debug.Log(inputTensor.shape);
-
-        var outputTensor = await ForwardAsync(m_Worker, inputTensor);
-        inputTensor.Dispose();
-        Debug.LogError("Input Tensor has been disposed!");
-
-        List<YoloItem> detectedObjects = GetYoloData(outputTensor, 0.65f, 0.3f);
+        // running model inference on the input Tensor
+        var outputTensor = await RunModelOnTensor(m_Worker, inputTensor);
+        
+        // Getting all the detections out of the outputTensor
+        List<YoloItem> detectedObjects = AnalyzeModelOutput(outputTensor, 0.65f, 0.5f);
 
         foreach (YoloItem detectedObject in detectedObjects)
         {
             Debug.Log($"class: {detectedObject.MostLikelyObject} -- confidence:{detectedObject.Confidence}");
         }
-        Debug.LogError(outputTensor.shape);
+        
+        // Disposing to free up GPU resources
+        inputTensor.Dispose();
+        Debug.Log("Input Tensor has been disposed!");
         outputTensor.Dispose();
+        Debug.Log("Output Tensor has been disposed!");
         m_Worker.Dispose();
-        Debug.LogError("Output Tensor has been disposed!");
+        Debug.Log("Model Worker has been disposed!");
+    }
 
+    private async Task<byte[]> LoadImage(string pathToImage)
+    {
+        if (!File.Exists(pathToImage))
+        {
+            Debug.LogError("Image not found");
+            return null;
+        }
+
+        byte[] imageBytes = await File.ReadAllBytesAsync(pathToImage);
+        return imageBytes;
+    }
+
+    private Texture2D PreprocessImage(byte[] imageByteArray)
+    {
+        Texture2D inputImageAsTexture2D = new Texture2D(width: 2, height: 2);
+        inputImageAsTexture2D.LoadImage(imageByteArray);
+        return inputImageAsTexture2D;
+    }
+
+    private Tensor CreateTensorFromTexture(Texture2D imageTexture)
+    {
+        RenderTexture renderTexture = new RenderTexture(416, 416, 24);
+        Graphics.Blit(imageTexture, renderTexture);
+        Texture2D textureFromRender = ConvertToTexture2D(renderTexture);
+        return new Tensor(textureFromRender, 3);
     }
 
     // https://stackoverflow.com/questions/44264468/convert-rendertexture-to-texture2d
-    private Texture2D ToTexture2D(RenderTexture rTex)
+    private Texture2D ConvertToTexture2D(RenderTexture rTex)
     {
         Texture2D tex = new Texture2D(rTex.width, rTex.height, TextureFormat.RGB24, false);
         RenderTexture.active = rTex;
@@ -94,7 +112,8 @@ public class ObjectDetector : MonoBehaviour
     }
     
     // run the inference
-    private async Task<Tensor> ForwardAsync(IWorker modelWorker, Tensor inputTensor)
+    // from https://github.com/Unity-Technologies/barracuda-release/issues/236#issue-1049168663
+    private async Task<Tensor> RunModelOnTensor(IWorker modelWorker, Tensor inputTensor)
     {
         var worker = m_Worker.StartManualSchedule(inputTensor);
         var randNumber = 0;
@@ -113,73 +132,63 @@ public class ObjectDetector : MonoBehaviour
         
     }
 
-    private List<YoloItem> GetYoloData(Tensor tensor, float minProbability, float overlapThreshold)
+    private List<YoloItem> AnalyzeModelOutput(Tensor outPutTensor, float minConfidence, float overlapThreshold)
     {
-        float maxConfidence = 0;
-        YoloItem maxConfidenceItem = null;
-        var boxesMeetingConfidenceLevel = new List<YoloItem>();
-        for (var i = 0; i < tensor.width; i++)
-        {
-            YoloItem yoloItem = new YoloItem(tensor, i);
-            //maxConfidence = yoloItem.Confidence > maxConfidence ? yoloItem.Confidence : maxConfidence;
-            if (yoloItem.Confidence > maxConfidence)
-            {
-                maxConfidence = yoloItem.Confidence;
-                maxConfidenceItem = yoloItem;
-            }
-            if (yoloItem.Confidence > minProbability)
-            {
-                boxesMeetingConfidenceLevel.Add(yoloItem);
-            }
-        }
-        Debug.LogError($"max confidence = {maxConfidence}");
-        if (maxConfidenceItem != null)
-        {
-            Debug.LogError($"max confidence item = {maxConfidenceItem.MostLikelyObject}");
-        }
+        List<YoloItem> allYoloItems = ExtractYoloItemsFromTensor(outPutTensor);
+        List<YoloItem> yoloItemsMeetingConfidenceLevel = FilterItemsByConfidence(allYoloItems, minConfidence);
+        List<YoloItem> finalYoloItems = NonMaximumSuppression(yoloItemsMeetingConfidenceLevel, overlapThreshold);
         
-        var result = new List<YoloItem>();
-        var recognizedTypes = boxesMeetingConfidenceLevel.Select(b => b.MostLikelyObject).Distinct();
-        foreach (string objType in recognizedTypes)
-        {
-            var boxesOfThisType = boxesMeetingConfidenceLevel.Where(b => b.MostLikelyObject == objType).ToList();
-            result.AddRange(RemoveOverlappingBoxes(boxesOfThisType, overlapThreshold));
-        }
-        
-        tensor.Dispose();
-        
-        Debug.LogError($"Boxes Meeting confidence level: {boxesMeetingConfidenceLevel.Count}");
-        
-        return result;
+        return finalYoloItems;
         
     }
 
-    private static List<YoloItem> RemoveOverlappingBoxes(List<YoloItem> boxesMeetingConfidenceLevel, float overlapThreshold)
+    private List<YoloItem> ExtractYoloItemsFromTensor(Tensor tensor)
     {
-        boxesMeetingConfidenceLevel.Sort((a,b) => b.Confidence.CompareTo(a.Confidence));
-        var selectedBoxes = new List<YoloItem>();
-        while (boxesMeetingConfidenceLevel.Count > 0)
+        List<YoloItem> yoloItems = new List<YoloItem>();
+        for (int i = 0; i < tensor.width; i++)
         {
-            var currentBox = boxesMeetingConfidenceLevel[0];
-            selectedBoxes.Add(currentBox);
-            boxesMeetingConfidenceLevel.RemoveAt(0);
-
-            for (var i = 0; i < boxesMeetingConfidenceLevel.Count; i++)
-            {
-                YoloItem otherBox = boxesMeetingConfidenceLevel[i];
-                float overlap = ComputeIoU(currentBox, otherBox);
-                if (overlap > overlapThreshold)
-                {
-                    boxesMeetingConfidenceLevel.RemoveAt(i);
-                    i--;
-                }
-            }
+            YoloItem yoloItem = new YoloItem(tensor, i, CocoNamesList);
+            yoloItems.Add(yoloItem);
+            
         }
-
-        return selectedBoxes;
+        
+        return yoloItems;
     }
 
-    private static float ComputeIoU(YoloItem boxA, YoloItem boxB)
+    private List<YoloItem> FilterItemsByConfidence(List<YoloItem> yoloItems, float minConfidence)
+    {
+        List<YoloItem> yoloItemsMeetingConfidenceLevel = new();
+        foreach (YoloItem yoloItem in yoloItems)
+        {
+            if (yoloItem.Confidence > minConfidence)
+            {
+                yoloItemsMeetingConfidenceLevel.Add(yoloItem);
+            }
+        }
+        return yoloItemsMeetingConfidenceLevel;
+    }
+    
+    // 
+    private List<YoloItem> NonMaximumSuppression(List<YoloItem> yoloItems, float overlapThreshold)
+    {
+        List<YoloItem> suppressedYoloItems = new List<YoloItem>();
+        List<YoloItem> yoloItemsSortedByConfidence =
+            yoloItems.OrderByDescending(yoloItem => yoloItem.Confidence).ToList();
+        while (yoloItemsSortedByConfidence.Any())
+        {
+            YoloItem yoloItemWithHighestConfidence = yoloItemsSortedByConfidence.First();
+            suppressedYoloItems.Add(yoloItemWithHighestConfidence);
+            yoloItemsSortedByConfidence.RemoveAt(0);
+
+            yoloItemsSortedByConfidence = yoloItemsSortedByConfidence
+                .Where(yoloItem => CalculateIoU(yoloItemWithHighestConfidence, yoloItem) < overlapThreshold).ToList();
+        }
+
+        return suppressedYoloItems;
+    }
+    
+    // Intersection over Union calculation
+    private static float CalculateIoU(YoloItem boxA, YoloItem boxB)
     {
         float xA = Math.Max(boxA.TopLeft.x, boxB.TopLeft.y);
         float yA = Math.Max(boxA.TopLeft.y, boxA.TopLeft.y);
@@ -192,125 +201,5 @@ public class ObjectDetector : MonoBehaviour
 
         return intersectionArea / unionArea;
 
-    }
-
-    public class YoloItem
-    {
-        public Vector2 Center { get; }
-        public Vector2 Size { get; }
-        public Vector2 TopLeft { get; }
-        public Vector2 BottomRight { get; }
-        public float Confidence { get; }
-        public string MostLikelyObject { get; }
-
-        public YoloItem (Tensor tensorData, int boxIndex)
-        {
-            Center = new Vector2(tensorData[0, 0, boxIndex, 0], tensorData[0, 0, boxIndex, 1]);
-            Size = new Vector2(tensorData[0, 0, boxIndex, 2], tensorData[0, 0, boxIndex, 3]);
-            TopLeft = Center - Size / 2;
-            BottomRight = Center + Size / 2;
-            Confidence = tensorData[0, 0, boxIndex, 4];
-
-            var classProbabilities = new List<float>();
-            for (var i = 5; i < tensorData.channels; i++)
-            {
-                classProbabilities.Add(tensorData[0, 0, boxIndex, i]);
-            }
-
-            var maxIndex = classProbabilities.Any() ? classProbabilities.IndexOf(classProbabilities.Max()) : 0;
-            MostLikelyObject = cocoNamesList.GetName(maxIndex);
-        }
-    }
-
-    private class CocoNames
-    {
-        public string GetName(int mapIndex)
-        {
-            return detectableObjects[mapIndex];
-        }
-
-        private readonly List<string> detectableObjects = new()
-        {
-            "person",
-            "bicycle",
-            "car",
-            "motorcycle",
-            "airplane",
-            "bus",
-            "train",
-            "truck",
-            "boat",
-            "traffic light",
-            "fire hydrant",
-            "stop sign",
-            "parking meter",
-            "bench",
-            "bird",
-            "cat",
-            "dog",
-            "horse",
-            "sheep",
-            "cow",
-            "elephant",
-            "bear",
-            "zebra",
-            "giraffe",
-            "backpack",
-            "umbrella",
-            "handbag",
-            "tie",
-            "suitcase",
-            "frisbee",
-            "skis",
-            "snowboard",
-            "sports ball",
-            "kite",
-            "baseball bat",
-            "baseball glove",
-            "skateboard",
-            "surfboard",
-            "tennis racket",
-            "bottle",
-            "wine glass",
-            "cup",
-            "fork",
-            "knife",
-            "spoon",
-            "bowl",
-            "banana",
-            "apple",
-            "sandwich",
-            "orange",
-            "broccoli",
-            "carrot",
-            "hot dog",
-            "pizza",
-            "donut",
-            "cake",
-            "chair",
-            "couch",
-            "potted plant",
-            "bed",
-            "dining table",
-            "toilet",
-            "tv",
-            "laptop",
-            "mouse",
-            "remote",
-            "keyboard",
-            "cell phone",
-            "microwave",
-            "oven",
-            "toaster",
-            "sink",
-            "refrigerator",
-            "book",
-            "clock",
-            "vase",
-            "scissors",
-            "teddy bear",
-            "hair drier",
-            "toothbrush"
-        };
     }
 }
