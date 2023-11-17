@@ -43,3 +43,62 @@ Next main steps will be:
 We are using Microsoft Visual Studio 2019, [Unity](https://unity.com/) and [MRTK3](https://docs.microsoft.com/en-us/windows/mixed-reality/mrtk-unity/mrtk3-overview/).
 The MRTK3-approach keeps the door open to work crossplatform. With this, we can maybe avoid environmental changes. The downside of this is that we are more or less forced to use **Microsoft Windows**, but maybe we are able to enable our MacOS and Linux-Users through cloud-solutions like [shadow.tech](shadow.tech).
 Hardwarewise we are focusing on Microsoft Hololens 2 primarly. Additionally we maybe expand it to Meta Quest 2.
+
+### Computer Vision
+In order to recognize what object is in front of the user we are using the lates state of the art object detection models from the YOLO (You Only Look Once) family.
+Link to the Models on GitHub: https://github.com/ultralytics/ultralytics
+We based our pipeline on the work of this paper: https://arxiv.org/pdf/2306.03537.pdf
+We used YOLOv8n (nano) and YOLOv8s (small) and trained them on the COCO81 dataset for 6hrs+ on a GTX1080Ti.
+
+
+## Assessments
+
+---
+
+The branch of interest is called **Level2Development**. 
+The code of interest can be found in Assets/Scripts and the scripts that I (Paul) worked on this semester are:
+- APIConnectionController & APIGroceryResponse
+- ImageCapture
+- ImageCropper
+- ObjectClassification
+- JsonManager
+
+Clean Code:
+- SmallCubeSpawner
+- ObjectDetector
+- COCONames, YoloItem
+- JsonManager
+
+Automated Software Testing can be found in Assets/Tests/:
+- SmallCubeSpawnerPlayModeTests
+- SmallCubeSpawnerEditModeTests
+  
+### Set Up Guide
+In order to get started with this project, one should follow these steps:
+- clone or download the branch **Level2Development**
+- install the Unity Hub and login with your account, then locate the project on your disk
+- install Unity 2021.3.27f1 LTS
+- if not already satisfied, install either Visual Studio 2022, Visual Studio Code or JetBrains Rider to have an IDE
+- run the Project from the Unity Hub
+- locate the scene **PrototypeV2** in Assets/Scenes, double click and enter play mode
+
+### Technical Documentation
+The goal of this project is that we use the capabilites of the Hololens 2 to visualize the hidden water consumption of Grocery Items. 
+In order to do that we need:
+- get images from the main camera of the device
+- run a computer vision algorithm on the images
+- recognize which grocery item is on the image (in front of the user)
+- look up the item in a database to retrieve the hidden water consumption
+- use the hidden water consumption to visualize it
+
+We are currently doing this with the following scripts located in Assets/Scripts:
+- images are provided via **ImageCapture** and **ImageCropper**
+- the computer vision algorithm is run via the **ObjectDetector**
+- the data about selected grocery items is transfered to the application using the **APIConnectionController** and the **JsonManager**
+- the water is visualized with the **SmallCubeSpawner** script
+
+Due to development there are currently certain constraints:
+- the data for the visualzation is hard coded (1700 liters of water) and not transferred
+- the image is not taken from the camera of the HoloLens 2, but rather taken by Unity's scene Main Camera
+- the computer vision algorithm is not able to detect all objects on given images
+  
