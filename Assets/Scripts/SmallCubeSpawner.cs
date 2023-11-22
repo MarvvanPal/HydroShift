@@ -34,7 +34,11 @@ public class SmallCubeSpawner : MonoBehaviour
   
     public void SpawnSmallCubes()
     {
-        volume = 2500f/*jsonManager.GroceryItems[itemName].waterConsumedPerPiece*/;
+        if (volume == 0)
+        {
+            volume = jsonManager.GroceryItems[itemName].waterConsumedPerPiece;
+        }
+        
         cubesToBeSpawned = CalculateCubesToBeSpawned(volume);
         smallCubeSize = GetSmallCubeDimensions(volume, cubesToBeSpawned);
         
@@ -55,8 +59,7 @@ public class SmallCubeSpawner : MonoBehaviour
 
             yield return new WaitForSeconds(delay);
         }
-    }   
-
+    }
 
     internal int CalculateCubesToBeSpawned(float volumeOfItemInLiters)
     {
@@ -64,7 +67,6 @@ public class SmallCubeSpawner : MonoBehaviour
         
         return Mathf.Clamp(amountOfCubesWith10LiterVolume, 0, maxAmountOfCubes);
     }
-
 
     internal Vector3 GetSmallCubeDimensions(float volumeOfItemInLiters, int amountOfCubesToBeSpawned)
     {       
