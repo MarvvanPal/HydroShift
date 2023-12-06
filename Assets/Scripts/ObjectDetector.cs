@@ -73,7 +73,7 @@ public class ObjectDetector : MonoBehaviour
         Debug.Log("Model Worker has been disposed!");
     }
 
-    private async Task<byte[]> LoadImage(string pathToImage)
+    internal async Task<byte[]> LoadImage(string pathToImage)
     {
         if (!File.Exists(pathToImage))
         {
