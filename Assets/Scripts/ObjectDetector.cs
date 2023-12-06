@@ -66,6 +66,7 @@ public class ObjectDetector : MonoBehaviour
         // Disposing to free up GPU resources
         inputTensor.Dispose();
         Debug.Log("Input Tensor has been disposed!");
+        Debug.Log(outputTensor.shape);
         outputTensor.Dispose();
         Debug.Log("Output Tensor has been disposed!");
         m_Worker.Dispose();
