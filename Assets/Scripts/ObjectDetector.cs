@@ -12,7 +12,6 @@ public class ObjectDetector : MonoBehaviour
     public NNModel modelAsset;
 
     private string imagePath;
-    // "cropped_screenshot.png"
     private readonly string imageName = "cropped_screenshot.png";
     private string fullPath;
     
