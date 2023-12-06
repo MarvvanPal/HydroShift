@@ -18,7 +18,7 @@ public class YoloItemTests
     public static IEnumerable<TestCaseData> YoloItemTestCaseData()
     {
         var cocoNames = new COCONames();
-        var classIndices = new int[] { 5, 6, 10, 18, 84 };
+        var classIndices = new int[] { 5, 6, 10, 18, 83 };
         var confidences = new float[] {0.7f, 0.75f, 0.8f, 0.85f, 0.95f };
         var centerCoordinates = new Vector2[] { new Vector2(100, 100), new Vector2(150, 150), new Vector2(200, 200), new Vector2(250, 250), new Vector2(300, 300) };
 
@@ -32,12 +32,12 @@ public class YoloItemTests
             tensorData[index++] = 20; // Width
             tensorData[index++] = 20; // Height
             tensorData[index++] = confidences[i];
-            tensorData[index + classIndices[i - 5]] = 1.0f;
+            tensorData[index + (classIndices[i] - 5)] = 1.0f;
 
             var tensorShape = new TensorShape(1, 1, 1, 84);
             Tensor tensor = new Tensor(tensorShape, tensorData);
             
-            yield return new TestCaseData(tensor, centerCoordinates[i], new Vector2(20, 20), confidences[i], cocoNames.GetName(classIndices[i] - 5)).SetName($"TestYoloItemWith{cocoNames.GetName(classIndices[i] - 5)}");
+            yield return new TestCaseData(tensor, centerCoordinates[i], new Vector2(20, 20), confidences[i], cocoNames.GetName(classIndices[i] - 5)).SetName($"TestYoloItemWith '{cocoNames.GetName(classIndices[i] - 5)}'");
         }
         
     }
