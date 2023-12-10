@@ -5,20 +5,26 @@ using System.Threading.Tasks;
 using NUnit.Framework;
 using UnityEngine;
 using UnityEngine.TestTools;
+using Unity.Barracuda;
 // 218891
-public class ObjectDetectorTests
+public class ObjectDetectorAsyncTests
 {
+    private NNModel modelAsset;
+    
     private ObjectDetector objectDetector;
     private GameObject detectorObject;
     private string mockImagePath;
-    
+    private byte[] testByteArray;
+
 
     [SetUp]
-    public void SetUp()
+    internal async Task GlobalSetUp()
     {
         detectorObject = new GameObject();
         objectDetector = detectorObject.AddComponent<ObjectDetector>();
+        
         mockImagePath = "Assets/Tests/MockData/mock_image.png";
+        testByteArray = await objectDetector.LoadImage(mockImagePath);
     }
 
     [UnityTest]
@@ -65,11 +71,14 @@ public class ObjectDetectorTests
 
         yield return null;
     }
-/*
-    [TearDown]
-    public void TearDown()
+
+    [Test]
+    public void PreprocessImage_ReturnsValidOutput()
     {
-        Object.Destroy(detectorObject);
+        Texture2D result = objectDetector.PreprocessImage(testByteArray);
+        
+        Assert.IsNotNull(result);
+        
     }
-    */
+
 }
