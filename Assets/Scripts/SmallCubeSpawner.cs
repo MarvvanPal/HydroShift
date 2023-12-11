@@ -13,23 +13,12 @@ public class SmallCubeSpawner : MonoBehaviour
 
     [SerializeField] public JsonManager jsonManager;
     public GameObject cubePrefab;
-
-    // Adjust the size of the cubes if necessary    
+    
     private Vector3 smallCubeSize;
-
-    // Variable to determine the amount of cubes to be spawned, will be calculated
     private int cubesToBeSpawned;
-
-    // Set a maximum amount of cubes to be spawned
     public int maxAmountOfCubes = 30;
-
-    // Volume variable to be filled by a request to the json file
     public float volume;
-
-    // How often do you want the cubes to be spawned?
     public readonly float spawnRate = 0.2f;
-
-    // The water consumption of which item do you want the cubes to represent? 
     public string itemName = "Cheese";
   
     public void SpawnSmallCubes()
